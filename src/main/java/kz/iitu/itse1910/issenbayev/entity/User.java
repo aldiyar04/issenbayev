@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity {
-
     public static final String ROLE_ADMIN = "Admin";
     public static final String ROLE_MANAGER = "Manager";
     public static final String ROLE_LEAD_DEV = "Lead Dev";

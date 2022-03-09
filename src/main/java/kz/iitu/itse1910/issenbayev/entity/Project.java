@@ -19,7 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 public class Project extends BaseEntity {
-
     @Column(name = "name")
     private String name;
 
@@ -51,9 +50,16 @@ public class Project extends BaseEntity {
                 ", version=" + version +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", leadDev=" + leadDev +
+                leadDev() +
+                ", leadDevUsername=" + leadDev.getUsername() +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 '}';
+    }
+
+    private String leadDev() {
+        return leadDev == null ? ", leadDev=null" :
+                ", leadDevId=" + leadDev.getId() +
+                        ", leadDevUname=" + leadDev.getUsername();
     }
 }

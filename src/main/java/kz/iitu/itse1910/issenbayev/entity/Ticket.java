@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Ticket extends BaseEntity {
-
     @Column(name = "title")
     private String title;
 
@@ -61,14 +60,15 @@ public class Ticket extends BaseEntity {
 
     @Override
     public String toString() {
-        return "TicketEntity{" +
+        return "Ticket{" +
                 "id=" + id +
                 ", version=" + version +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", project=" + project +
-                ", assignee=" + assignee +
-                ", submitter=" + submitter +
+                ", projectId=" + project.getId() +
+                ", projectName=" + project.getName() +
+                assignee() +
+                submitter() +
                 ", type='" + type + '\'' +
                 ", status='" + status + '\'' +
                 ", priority='" + priority + '\'' +
@@ -77,5 +77,17 @@ public class Ticket extends BaseEntity {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
+    }
+
+    private String assignee() {
+        return assignee == null ? ", assignee=null" :
+                ". assigneeId=" + assignee.getId() +
+                ", assigneeUname=" + assignee.getUsername();
+    }
+
+    private String submitter() {
+        return submitter == null ? ", submitter=null" :
+                ", submitterId=" + submitter.getId() +
+                        ", submitterUname=" + submitter.getUsername();
     }
 }

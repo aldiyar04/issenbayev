@@ -1,78 +1,67 @@
 package kz.iitu.itse1910.issenbayev.config;
 
-import org.hibernate.SessionFactory;
+import kz.iitu.itse1910.issenbayev.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-public class HibernateConfig {
-
+public class JpaConfig {
     private final ConfigurableEnvironment env;
 
     private boolean isDevProfile;
     private boolean isTestProfile;
 
     @Autowired
-    public HibernateConfig(ConfigurableEnvironment env) {
+    public JpaConfig(ConfigurableEnvironment env) {
         this.env = env;
     }
 
     @PostConstruct
-    public void afterPropertiesSet() throws Exception {
+    public void initProfiles() {
         List<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        isDevProfile = activeProfiles.contains("dev");
-        isTestProfile = activeProfiles.contains("test");
+        isDevProfile = activeProfiles.contains(Profile.DEVELOPMENT);
+        isTestProfile = activeProfiles.contains(Profile.TEST);
 
         if (isDevProfile && isTestProfile) {
-            throw new IllegalStateException("Both dev and test profiles are set. Datasource configuration needs " +
-                    "either one or the other.");
+            throw new IllegalStateException(String.format("Both %s and %s profiles are set. Datasource configuration " +
+                    "needs either one or the other.", Profile.DEVELOPMENT, Profile.TEST));
         } else if (!isDevProfile && !isTestProfile) {
-            throw new IllegalStateException("No valid profile is set. Datasource configuration needs " +
-                    "either dev or test profile to be set.");
-        }
-
-        //        print();
-//        String[] profiles = env.getActiveProfiles();
-//        for (String p: profiles) {
-//            System.out.println(p);
-//        }
-//        print();
-    }
-
-    void print() {
-        for (int i = 0; i < 30; i++) {
-            System.out.println();
+            throw new IllegalStateException(String.format("No valid profile is set. Datasource configuration needs " +
+                    "either %s or %s profile to be set.", Profile.DEVELOPMENT, Profile.TEST));
         }
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() throws IOException {
-        return new HibernateTransactionManager(sessionFactory());
+    public PlatformTransactionManager transactionManager() {
+        return new JpaTransactionManager(entityManagerFactory());
     }
 
     @Bean(name="entityManagerFactory")
-    public SessionFactory sessionFactory() throws IOException {
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource());
-        sessionFactoryBean.setHibernateProperties(hibernateProperties());
-        sessionFactoryBean.setPackagesToScan("kz.iitu.itse1910.issenbayev.entity");
-        sessionFactoryBean.afterPropertiesSet();
-        return sessionFactoryBean.getObject();
+    public EntityManagerFactory entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setDataSource(dataSource());
+        factoryBean.setJpaProperties(hibernateProperties());
+        factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
+        factoryBean.setPackagesToScan("kz.iitu.itse1910.issenbayev.entity");
+        factoryBean.afterPropertiesSet();
+        return factoryBean.getNativeEntityManagerFactory();
     }
 
     @Bean
@@ -103,7 +92,7 @@ public class HibernateConfig {
     private Properties hibernateProperties() {
         Properties props = new Properties();
 
-        props.put("hibernate.dll-auto", "none");
+        props.put("hibernate.dll-auto", "none"); // DB is initiated using schema.sql and data.sql
 
         // Caching
         props.put("hibernate.cache.use_second_level_cache", true);
@@ -120,5 +109,10 @@ public class HibernateConfig {
         props.put("hibernate.show_sql", true);
 
         return props;
+    }
+
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
     }
 }

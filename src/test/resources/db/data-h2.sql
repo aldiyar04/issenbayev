@@ -1,5 +1,5 @@
 INSERT INTO users (role, email, username) VALUES
-    ('Admin', 'admin@test.com', 'Admin'),
+    ('Admin', 'admin@test.com', 'H2Admin'),
     ('Manager', 'manager1@test.com', 'Manager1'),
     ('Manager', 'manager2@test.com', 'Manager2'),
     ('Lead Dev', 'leaddev1@test.com', 'LeadDev1'),

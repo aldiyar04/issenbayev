@@ -1,7 +1,6 @@
 package kz.iitu.itse1910.issenbayev.repository;
 
 import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.entity.User;
 
 import java.util.List;
 import java.util.Optional;

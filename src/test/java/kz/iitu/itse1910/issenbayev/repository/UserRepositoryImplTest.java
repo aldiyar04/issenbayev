@@ -1,17 +1,15 @@
 package kz.iitu.itse1910.issenbayev.repository;
 
 import kz.iitu.itse1910.issenbayev.IssenbayevApplication;
-import kz.iitu.itse1910.issenbayev.config.HibernateConfig;
+import kz.iitu.itse1910.issenbayev.config.JpaConfig;
 import kz.iitu.itse1910.issenbayev.entity.User;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,8 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {IssenbayevApplication.class, HibernateConfig.class, UserRepositoryImpl.class})
-@ActiveProfiles("test")
+@ContextConfiguration(classes = {IssenbayevApplication.class, JpaConfig.class, UserRepositoryImpl.class})
 @TestPropertySource("classpath:application.properties")
 class UserRepositoryImplTest {
 
@@ -42,7 +39,7 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    void testFindAllPaginated() throws InterruptedException {
+    void testFindAllPaginated() {
         // arrange
         int offset = 0;
         int size = 3;
@@ -60,8 +57,15 @@ class UserRepositoryImplTest {
     @Test
     void testFindById() {
         // arrange
-        Optional<User> result = userRepositoryImpl.findById(Long.valueOf(1));
-        Assertions.assertEquals(null, result);
+        long id = 1L;
+        String username = "H2Admin";
+
+        // act
+        Optional<User> result = userRepositoryImpl.findById(id);
+
+        // assert
+        Assertions.assertTrue(result.isPresent());
+        Assertions.assertEquals(username, result.get().getUsername());
     }
 
     @Test
