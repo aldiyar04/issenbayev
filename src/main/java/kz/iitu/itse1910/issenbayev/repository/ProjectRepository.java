@@ -1,13 +1,18 @@
 package kz.iitu.itse1910.issenbayev.repository;
 
 import kz.iitu.itse1910.issenbayev.entity.Project;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.lang.NonNull;
 
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 
-public interface ProjectRepository {
-    List<Project> findAllPaginated(int offset, int size);
-    Optional<Project> findById(Long id);
-    void save(Project project);
-    void delete(Project project);
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    @Lock(LockModeType.READ)
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    Page<Project> findAll(@NonNull Pageable pageable);
 }

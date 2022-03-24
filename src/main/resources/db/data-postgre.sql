@@ -1,14 +1,14 @@
-INSERT INTO users (role, email, username) VALUES
-    ('Admin', 'admin@test.com', 'Admin'),
-    ('Manager', 'manager1@test.com', 'Manager1'),
-    ('Manager', 'manager2@test.com', 'Manager2'),
-    ('Lead Dev', 'leaddev1@test.com', 'LeadDev1'),
-    ('Lead Dev', 'leaddev2@test.com', 'LeadDev2'),
-    ('Lead Dev', 'leaddev3@test.com', 'LeadDev3'),
-    ('Developer', 'developer1@test.com', 'Developer1'),
-    ('Developer', 'developer2@test.com', 'Developer2'),
-    ('Developer', 'developer3@test.com', 'Developer3'),
-    ('Developer', 'developer4@test.com', 'Developer4');
+INSERT INTO users (role, email, username, password) VALUES
+    ('Admin', 'admin@test.com', 'Admin', 'password'),
+    ('Manager', 'manager1@test.com', 'Manager1', 'password'),
+    ('Manager', 'manager2@test.com', 'Manager2', 'password'),
+    ('Lead Dev', 'leaddev1@test.com', 'LeadDev1', 'password'),
+    ('Lead Dev', 'leaddev2@test.com', 'LeadDev2', 'password'),
+    ('Lead Dev', 'leaddev3@test.com', 'LeadDev3', 'password'),
+    ('Developer', 'developer1@test.com', 'Developer1', 'password'),
+    ('Developer', 'developer2@test.com', 'Developer2', 'password'),
+    ('Developer', 'developer3@test.com', 'Developer3', 'password'),
+    ('Developer', 'developer4@test.com', 'Developer4', 'password');
 
 INSERT INTO projects (name, description, lead_dev_id) VALUES
     ('Text Editor',

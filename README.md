@@ -13,7 +13,7 @@ Bug tracker is an application that lets developers track issues in software proj
 
 **Note:** Changes made by a demo user don’t get saved to the database to prevent corruption of existing data
 
-**Search and pagination**
+**Search and pageRequest**
 
 - General search for any type of info
 - Every list (e.g., a list of users or tickets) can be:

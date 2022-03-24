@@ -3,9 +3,11 @@ package kz.iitu.itse1910.issenbayev.entity;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -32,7 +34,11 @@ public class User extends BaseEntity {
     @Column
     private String username;
 
+    @Column
+    private String password;
+
     @Column(name = "created_on")
+    @CreatedDate
     private LocalDate createdOn;
 
     @PrePersist
@@ -60,4 +66,6 @@ public class User extends BaseEntity {
                 ", createdOn=" + createdOn +
                 '}';
     }
+
+    public static final String[] SEARCHABLE_COLUMNS = {"email", "username"};
 }

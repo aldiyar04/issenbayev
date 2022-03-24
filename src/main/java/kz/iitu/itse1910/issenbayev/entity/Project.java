@@ -59,7 +59,6 @@ public class Project extends BaseEntity {
 
     private String leadDev() {
         return leadDev == null ? ", leadDev=null" :
-                ", leadDevId=" + leadDev.getId() +
-                        ", leadDevUname=" + leadDev.getUsername();
+                ", leadDevId=" + leadDev.getId();
     }
 }

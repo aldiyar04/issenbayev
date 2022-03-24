@@ -81,13 +81,11 @@ public class Ticket extends BaseEntity {
 
     private String assignee() {
         return assignee == null ? ", assignee=null" :
-                ". assigneeId=" + assignee.getId() +
-                ", assigneeUname=" + assignee.getUsername();
+                ". assigneeId=" + assignee.getId();
     }
 
     private String submitter() {
         return submitter == null ? ", submitter=null" :
-                ", submitterId=" + submitter.getId() +
-                        ", submitterUname=" + submitter.getUsername();
+                ", submitterId=" + submitter.getId();
     }
 }

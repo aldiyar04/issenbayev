@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev;
+package kz.iitu.itse1910.issenbayev.config;
 
 public class Profile {
     public static final String TEST = "test";
