@@ -18,6 +18,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("select p.leadDev.email, p.name, " +
             "t.title, t.type, t.priority, t.targetResolutionDate, t.createdAt " +
 <<<<<<< HEAD
+<<<<<<< HEAD
             "from Ticket t inner join fetch Project p on t.project = p and p.leadDev is not null " +
             "order by t.id")
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
@@ -27,10 +28,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     List<Object[]> findUnassignedTickets();
 >>>>>>> a747d78 (Wrote unassigned and overdue tickets JPQL queries)
+=======
+            "from Ticket t inner join fetch Project p on t.project = p and p.leadDev is not null " +
+            "order by t.id")
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    List<Object[]> findUnassignedTicketInfos();
+>>>>>>> 2799244 (Done: send unassigned and overdue ticket reports to lead devs)
 
     @Query("select p.leadDev.email, p.name, " +
             "t.title, t.type, t.status, t.priority, t.targetResolutionDate " +
             "from Ticket t inner join fetch Project p on t.project = p and p.leadDev is not null " +
+<<<<<<< HEAD
 <<<<<<< HEAD
             "where t.targetResolutionDate < current_date " +
             "order by t.id")
@@ -41,4 +49,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     List<Object[]> findOverdueTickets();
 >>>>>>> a747d78 (Wrote unassigned and overdue tickets JPQL queries)
+=======
+            "where t.targetResolutionDate < current_date " +
+            "order by t.id")
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    List<Object[]> findOverdueTicketInfos();
+>>>>>>> 2799244 (Done: send unassigned and overdue ticket reports to lead devs)
 }

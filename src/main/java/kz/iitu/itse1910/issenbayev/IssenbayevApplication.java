@@ -1,12 +1,14 @@
 package kz.iitu.itse1910.issenbayev;
 
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.entity.Ticket;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 import kz.iitu.itse1910.issenbayev.service.UserService;
 >>>>>>> a747d78 (Wrote unassigned and overdue tickets JPQL queries)
+=======
+>>>>>>> 2799244 (Done: send unassigned and overdue ticket reports to lead devs)
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -24,6 +26,9 @@ public class IssenbayevApplication {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2799244 (Done: send unassigned and overdue ticket reports to lead devs)
 //		TicketRepository ticketRepository = context.getBean(TicketRepository.class);
 //		List<Object[]> unassignedTickets = ticketRepository.findUnassignedTickets();
 //		for (Object[] t : unassignedTickets) {
@@ -40,6 +45,7 @@ public class IssenbayevApplication {
 //			}
 //			System.out.println();
 //		}
+<<<<<<< HEAD
 =======
 		TicketRepository ticketRepository = context.getBean(TicketRepository.class);
 		List<Object[]> unassignedTickets = ticketRepository.findUnassignedTickets();
@@ -58,6 +64,8 @@ public class IssenbayevApplication {
 			System.out.println();
 		}
 >>>>>>> a747d78 (Wrote unassigned and overdue tickets JPQL queries)
+=======
+>>>>>>> 2799244 (Done: send unassigned and overdue ticket reports to lead devs)
 
 //		UserService userService = context.getBean(UserService.class);
 //		userService.register(new UserSignupReq("email@test.com", "aldiyar04", "pass"));
