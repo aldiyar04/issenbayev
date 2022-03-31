@@ -58,6 +58,9 @@ public class Ticket extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Transient
+    private boolean isOverdue;
+
     @Override
     public String toString() {
         return "Ticket{" +

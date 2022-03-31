@@ -3,27 +3,27 @@ package kz.iitu.itse1910.issenbayev.feature.emailsending;
 import kz.iitu.itse1910.issenbayev.feature.emailsending.ticketinfo.OverdueTicketInfo;
 import kz.iitu.itse1910.issenbayev.feature.emailsending.ticketinfo.UnassignedTicketInfo;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class EmailSendingScheduler {
+@AllArgsConstructor
+public class TicketReportEmailingScheduler {
     private static final String CRON = "${scheduling.email-sending.ticket-reports.cron}";
     private final EmailSender emailSender;
     private final TicketRepository ticketRepository;
 
-    public EmailSendingScheduler(EmailSender emailSender, TicketRepository ticketRepository) {
-        this.emailSender = emailSender;
-        this.ticketRepository = ticketRepository;
-    }
-
     @Scheduled(cron = CRON)
-    public void sendUnassignedTicketsEmailsToLeadDevs() {
+    public void sendUnassignedTicketReportsToLeadDevs() {
         List<UnassignedTicketInfo> ticketInfos = toUnassignedTicketInfos(ticketRepository.findUnassignedTicketInfos());
         for (String projectName: unassignedTicketCountsForProjects(ticketInfos).keySet()) {
             List<UnassignedTicketInfo> ticketsOfCurrentProject = ticketInfos.stream()
@@ -78,7 +78,7 @@ public class EmailSendingScheduler {
     }
 
     @Scheduled(cron = CRON)
-    public void sendOverdueTicketsEmailsToLeadDevs() {
+    public void sendOverdueTicketReportsToLeadDevs() {
         List<OverdueTicketInfo> tickets = toOverdueTicketInfos(ticketRepository.findOverdueTicketInfos());
         for (String projectName: overdueTicketCountsForProjects(tickets).keySet()) {
             List<OverdueTicketInfo> ticketsOfCurrentProject = tickets.stream()
