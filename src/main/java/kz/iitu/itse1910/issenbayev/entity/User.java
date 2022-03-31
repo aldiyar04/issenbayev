@@ -1,13 +1,12 @@
 package kz.iitu.itse1910.issenbayev.entity;
 
+import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserRole;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -26,6 +25,7 @@ public class User extends BaseEntity {
     public static final String ROLE_DEVELOPER = "Developer";
 
     @Column
+    @CheckUserRole
     private String role;
 
     @Column
@@ -38,7 +38,6 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "created_on")
-    @CreatedDate
     private LocalDate createdOn;
 
     @PrePersist
@@ -47,11 +46,12 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(Long id, Long version, String role, String email, String username, LocalDate createdOn) {
+    public User(Long id, Long version, String role, String email, String username, String password, LocalDate createdOn) {
         super(id, version);
         this.role = role;
         this.email = email;
         this.username = username;
+        this.password = password;
         this.createdOn = createdOn;
     }
 
@@ -66,6 +66,4 @@ public class User extends BaseEntity {
                 ", createdOn=" + createdOn +
                 '}';
     }
-
-    public static final String[] SEARCHABLE_COLUMNS = {"email", "username"};
 }

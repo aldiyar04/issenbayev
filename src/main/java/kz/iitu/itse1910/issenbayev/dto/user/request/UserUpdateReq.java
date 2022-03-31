@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.dto.request;
+package kz.iitu.itse1910.issenbayev.dto.user.request;
 
 import lombok.Builder;
 import lombok.Getter;

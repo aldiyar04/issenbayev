@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -42,6 +43,17 @@ public class Project extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "assignee_id")
     )
     private List<User> assignees;
+
+    @PrePersist
+    private void setCreatedOnUpdatedOn() {
+        createdOn = LocalDate.now();
+        updatedOn = LocalDate.now();
+    }
+
+    @AssertTrue(message = "Lead dev must have the role of lead dev")
+    public boolean isLeadDevRoleConsistent() {
+        return leadDev == null || leadDev.getRole().equals(User.ROLE_LEAD_DEV);
+    }
 
     @Override
     public String toString() {

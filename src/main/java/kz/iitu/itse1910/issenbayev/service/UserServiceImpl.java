@@ -1,29 +1,37 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.request.UserPasswdChangeReq;
-import kz.iitu.itse1910.issenbayev.dto.request.UserSignupReq;
-import kz.iitu.itse1910.issenbayev.dto.request.UserUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.response.UserResp;
+import kz.iitu.itse1910.issenbayev.dto.user.request.UserPasswdChangeReq;
+import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
+import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
+import kz.iitu.itse1910.issenbayev.dto.user.response.UserResp;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.helper.exception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.helper.exception.RecordNotFoundException;
-import kz.iitu.itse1910.issenbayev.helper.mapper.UserMapper;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = {RecordAlreadyExistsException.class})
     public UserResp register(UserSignupReq signupReq) {
-        throwIfAlreadyExists(signupReq);
+        throwIfAlreadyTaken(signupReq.getEmail(), signupReq.getUsername());
         User user = toEntity(signupReq);
+        user.setRole(User.ROLE_DEVELOPER);
         User savedUser = userRepository.save(user);
         return toResponse(savedUser);
     }
@@ -50,6 +58,8 @@ public class UserServiceImpl implements UserService {
         String newEmail = updateReq.getNewEmail();
         String newUsername = updateReq.getNewUsername();
 
+        // TODO: check if newEmail and newUsername are already taken and throw exception if that's the case
+
         if (StringUtils.hasText(newRole)) {
             throwIfRoleInvalid(newRole);
             user.setRole(newRole);
@@ -71,25 +81,23 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    private void throwIfAlreadyExists(UserSignupReq signupReq) {
-        boolean isUsernameTaken = userRepository.existsByUsername(signupReq.getUsername());
-        boolean isEmailTaken = userRepository.existsByEmail(signupReq.getEmail());
+    private void throwIfAlreadyTaken(String email, String username) {
+        boolean isUsernameTaken = userRepository.existsByUsername(username);
+        boolean isEmailTaken = userRepository.existsByEmail(email);
 
         if (isUsernameTaken && isEmailTaken) {
             throw new RecordAlreadyExistsException(String.format("Email %s and username %s are already taken",
-                    signupReq.getEmail(), signupReq.getUsername()));
+                    email, username));
         } else if (isUsernameTaken) {
-            throw new RecordAlreadyExistsException("Username " + signupReq.getUsername() + " is already taken");
+            throw new RecordAlreadyExistsException("Username " + username + " is already taken");
         } else if (isEmailTaken) {
-            throw new RecordAlreadyExistsException("Email " + signupReq.getEmail() + " is already taken");
+            throw new RecordAlreadyExistsException("Email " + email + " is already taken");
         }
     }
 
     private User getByIdOrThrowNotFound(long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new RecordNotFoundException("User with id " + id + " does not exist");
-                });
+                .orElseThrow(() -> new RecordNotFoundException("User with id " + id + " does not exist"));
     }
 
     private User toEntity(UserSignupReq signupReq) {

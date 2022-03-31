@@ -1,15 +1,17 @@
-package kz.iitu.itse1910.issenbayev.config;
+package kz.iitu.itse1910.issenbayev.feature.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Configuration
+@EnableTransactionManagement
 public class JpaConfig {
     private final ConfigurableEnvironment env;
 
@@ -33,16 +36,23 @@ public class JpaConfig {
     @PostConstruct
     public void initProfiles() {
         List<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        isDevProfile = activeProfiles.contains(Profile.DEVELOPMENT);
-        isTestProfile = activeProfiles.contains(Profile.TEST);
+        isDevProfile = activeProfiles.contains(AppProfile.DEVELOPMENT);
+        isTestProfile = activeProfiles.contains(AppProfile.TEST);
 
         if (isDevProfile && isTestProfile) {
             throw new IllegalStateException(String.format("Both %s and %s profiles are set. Datasource configuration " +
-                    "needs either one or the other.", Profile.DEVELOPMENT, Profile.TEST));
+                    "needs either one or the other.", AppProfile.DEVELOPMENT, AppProfile.TEST));
         } else if (!isDevProfile && !isTestProfile) {
             throw new IllegalStateException(String.format("No valid profile is set. Datasource configuration needs " +
-                    "either %s or %s profile to be set.", Profile.DEVELOPMENT, Profile.TEST));
+                    "either %s or %s profile to be set.", AppProfile.DEVELOPMENT, AppProfile.TEST));
         }
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager(entityManagerFactory());
+        transactionManager.setJpaDialect(isolationSupportJpaDialect());
+        return transactionManager;
     }
 
     @Bean(name="entityManagerFactory")
@@ -52,6 +62,7 @@ public class JpaConfig {
         factoryBean.setJpaProperties(hibernateProperties());
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
         factoryBean.setPackagesToScan("kz.iitu.itse1910.issenbayev.entity");
+        factoryBean.setJpaDialect(isolationSupportJpaDialect());
         factoryBean.afterPropertiesSet();
         return factoryBean.getNativeEntityManagerFactory();
     }
@@ -106,5 +117,9 @@ public class JpaConfig {
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
         return new HibernateJpaVendorAdapter();
+    }
+
+    private JpaDialect isolationSupportJpaDialect() {
+        return new IsolationSupportJpaDialect();
     }
 }

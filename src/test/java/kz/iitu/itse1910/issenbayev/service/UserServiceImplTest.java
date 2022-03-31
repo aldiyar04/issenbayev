@@ -1,8 +1,8 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.request.UserPasswdChangeReq;
-import kz.iitu.itse1910.issenbayev.dto.request.UserSignupReq;
-import kz.iitu.itse1910.issenbayev.dto.response.UserResp;
+import kz.iitu.itse1910.issenbayev.dto.user.request.UserPasswdChangeReq;
+import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
+import kz.iitu.itse1910.issenbayev.dto.user.response.UserResp;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,12 +30,12 @@ class UserServiceImplTest {
         when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
         UserResp result = underTest.register(new UserSignupReq("email", "username", "password"));
-        Assertions.assertEquals(null, result);
+        Assertions.assertNull(result);
     }
 
     @Test
     void testChangePassword() {
-        underTest.changePassword(new UserPasswdChangeReq(Long.valueOf(1), "oldPassword", "newPassword"));
+        underTest.changePassword(new UserPasswdChangeReq(1L, "oldPassword", "newPassword"));
     }
 
     @Test
@@ -46,6 +46,6 @@ class UserServiceImplTest {
 
     @Test
     void testDelete() {
-        underTest.delete(Long.valueOf(1));
+        underTest.delete(1L);
     }
 }
