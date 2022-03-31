@@ -17,14 +17,16 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("select p.leadDev.email, p.name, " +
             "t.title, t.type, t.priority, t.targetResolutionDate, t.createdAt " +
-            "from Ticket t inner join fetch Project p on t.project = p and p.leadDev is not null")
+            "from Ticket t inner join fetch Project p on t.project = p and p.leadDev is not null " +
+            "order by t.id")
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
-    List<Object[]> findUnassignedTickets();
+    List<Object[]> findUnassignedTicketInfos();
 
     @Query("select p.leadDev.email, p.name, " +
             "t.title, t.type, t.status, t.priority, t.targetResolutionDate " +
             "from Ticket t inner join fetch Project p on t.project = p and p.leadDev is not null " +
-            "where t.targetResolutionDate < current_date")
+            "where t.targetResolutionDate < current_date " +
+            "order by t.id")
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
-    List<Object[]> findOverdueTickets();
+    List<Object[]> findOverdueTicketInfos();
 }

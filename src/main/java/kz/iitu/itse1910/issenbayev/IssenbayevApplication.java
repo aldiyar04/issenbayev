@@ -1,9 +1,7 @@
 package kz.iitu.itse1910.issenbayev;
 
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.entity.Ticket;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
-import kz.iitu.itse1910.issenbayev.service.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -20,22 +18,22 @@ public class IssenbayevApplication {
 		context = SpringApplication.run(IssenbayevApplication.class, args);
 
 
-		TicketRepository ticketRepository = context.getBean(TicketRepository.class);
-		List<Object[]> unassignedTickets = ticketRepository.findUnassignedTickets();
-		for (Object[] t : unassignedTickets) {
-			for (Object field : t) {
-				System.out.println(field);
-			}
-			System.out.println();
-		}
-
-		List<Object[]> overdueTickets = ticketRepository.findOverdueTickets();
-		for (Object[] t : overdueTickets) {
-			for (Object field : t) {
-				System.out.println(field);
-			}
-			System.out.println();
-		}
+//		TicketRepository ticketRepository = context.getBean(TicketRepository.class);
+//		List<Object[]> unassignedTickets = ticketRepository.findUnassignedTickets();
+//		for (Object[] t : unassignedTickets) {
+//			for (Object field : t) {
+//				System.out.println(field);
+//			}
+//			System.out.println();
+//		}
+//
+//		List<Object[]> overdueTickets = ticketRepository.findOverdueTicketReports();
+//		for (Object[] t : overdueTickets) {
+//			for (Object field : t) {
+//				System.out.println(field);
+//			}
+//			System.out.println();
+//		}
 
 //		UserService userService = context.getBean(UserService.class);
 //		userService.register(new UserSignupReq("email@test.com", "aldiyar04", "pass"));

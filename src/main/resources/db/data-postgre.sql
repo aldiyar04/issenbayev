@@ -2,7 +2,7 @@ INSERT INTO users (role, email, username, password) VALUES
     ('Admin', 'admin@test.com', 'Admin', 'password'),
     ('Manager', 'manager1@test.com', 'Manager1', 'password'),
     ('Manager', 'manager2@test.com', 'Manager2', 'password'),
-    ('Lead Dev', 'leaddev1@test.com', 'LeadDev1', 'password'),
+    ('Lead Dev', 'allaissen@gmail.com', 'LeadDev1', 'password'),
     ('Lead Dev', 'leaddev2@test.com', 'LeadDev2', 'password'),
     ('Lead Dev', 'leaddev3@test.com', 'LeadDev3', 'password'),
     ('Developer', 'developer1@test.com', 'Developer1', 'password'),
