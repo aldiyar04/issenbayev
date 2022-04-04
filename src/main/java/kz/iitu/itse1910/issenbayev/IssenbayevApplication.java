@@ -5,7 +5,6 @@ import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
-import kz.iitu.itse1910.issenbayev.service.UserService;
 >>>>>>> a747d78 (Wrote unassigned and overdue tickets JPQL queries)
 =======
 >>>>>>> 2799244 (Done: send unassigned and overdue ticket reports to lead devs)
