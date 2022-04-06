@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.feature.exception;
+package kz.iitu.itse1910.issenbayev.feature.exception.apiexception;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -8,6 +8,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ProjectCreationReq {
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 }

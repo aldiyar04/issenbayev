@@ -1,7 +1,9 @@
-package kz.iitu.itse1910.issenbayev.feature.exception;
+package kz.iitu.itse1910.issenbayev.feature.exception.apiexception;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +16,13 @@ public class ApiException extends RuntimeException {
     }
 
     public ApiException(ApiExceptionDetailHolder detailHolder) {
+        this.detailHolders = Collections.singletonList(detailHolder);
+    }
+
+    public ApiException(String message) {
+        ApiExceptionDetailHolder detailHolder = ApiExceptionDetailHolder.builder()
+                .message(message)
+                .build();
         this.detailHolders = Collections.singletonList(detailHolder);
     }
 }

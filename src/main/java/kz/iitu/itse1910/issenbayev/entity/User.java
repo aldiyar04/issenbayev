@@ -17,13 +17,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class User extends BaseEntity {
-    public static final String COLUMN_ROLE = "role";
-    public static final String COLUMN_EMAIL = "email";
-    public static final String COLUMN_USERNAME = "username";
-    public static final String COLUMN_PASSWORD = "password";
-    public static final String COLUMN_CREATED_ON = "created_on";
-
     public static final String ROLE_ADMIN = "Admin";
     public static final String ROLE_MANAGER = "Manager";
     public static final String ROLE_LEAD_DEV = "Lead Dev";
@@ -57,17 +52,5 @@ public class User extends BaseEntity {
         this.username = username;
         this.password = password;
         this.createdOn = createdOn;
-    }
-
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "id=" + id +
-                ", version=" + version +
-                ", role='" + role + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", createdOn=" + createdOn +
-                '}';
     }
 }

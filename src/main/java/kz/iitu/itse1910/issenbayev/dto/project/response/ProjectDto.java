@@ -18,6 +18,7 @@ public class ProjectDto {
     private final Long id;
     private final String name;
     private final String description;
+    private final Long leadDevId;
     private final String leadDevUname;
     private final String createdOn;
     private final String updatedOn;

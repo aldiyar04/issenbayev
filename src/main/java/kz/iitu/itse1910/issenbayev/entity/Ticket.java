@@ -58,8 +58,11 @@ public class Ticket extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Transient
-    private boolean isOverdue;
+    @PrePersist
+    private void setCreatedOnUpdatedOn() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
     @Override
     public String toString() {
@@ -70,8 +73,8 @@ public class Ticket extends BaseEntity {
                 ", description='" + description + '\'' +
                 ", projectId=" + project.getId() +
                 ", projectName=" + project.getName() +
-                assignee() +
-                submitter() +
+                ", assigneeId=" + (assignee == null ? "null" : "" + assignee.getId()) +
+                ", submitterId=" + (submitter == null ? "=null" : "" + submitter.getId()) +
                 ", type='" + type + '\'' +
                 ", status='" + status + '\'' +
                 ", priority='" + priority + '\'' +
@@ -80,15 +83,5 @@ public class Ticket extends BaseEntity {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
-    }
-
-    private String assignee() {
-        return assignee == null ? ", assignee=null" :
-                ". assigneeId=" + assignee.getId();
-    }
-
-    private String submitter() {
-        return submitter == null ? ", submitter=null" :
-                ", submitterId=" + submitter.getId();
     }
 }

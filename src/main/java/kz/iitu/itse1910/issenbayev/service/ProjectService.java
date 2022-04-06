@@ -3,48 +3,51 @@ package kz.iitu.itse1910.issenbayev.service;
 import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectCreationReq;
 import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
+import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectPaginatedResp;
 import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
-import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.ProjectMapper;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
+@Transactional
 @AllArgsConstructor
 public class ProjectService {
     private final ProjectRepository projectRepository;
 
-    public List<ProjectDto> getAllProjects(Pageable pageable) {
-        List<Project> projectEntities = projectRepository.findAll(pageable).toList();
-        return projectEntities.stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public ProjectPaginatedResp getProjects(Pageable pageable) {
+        Page<Project> projectPage = projectRepository.findAll(pageable);
+        return ProjectPaginatedResp.fromProjectPage(projectPage);
     }
 
-    private ProjectDto toResponse(Project project) {
-        return ProjectMapper.INSTANCE.toResponse(project);
+    @Transactional(readOnly = true)
+    public ProjectDto getById(long id) {
+        Project project = getByIdOrThrowNotFound(id);
+        return toDto(project);
     }
 
-    public void create(ProjectCreationReq creationReq) {
+    public ProjectDto create(ProjectCreationReq creationReq) {
         throwIfNameAlreadyTaken(creationReq.getName());
 
         Project project = Project.builder()
                 .name(creationReq.getName())
                 .description(creationReq.getDescription())
                 .build();
-        projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
+        return toDto(savedProject);
     }
 
-    public void update(ProjectUpdateReq updateReq) {
-        Project project = getByIdOrThrowNotFound(updateReq.getId());
+    public ProjectDto update(long id, ProjectUpdateReq updateReq) {
+        Project project = getByIdOrThrowNotFound(id);
 
         String newName = updateReq.getName();
         String newDescription = updateReq.getDescription();
@@ -56,7 +59,8 @@ public class ProjectService {
         if (StringUtils.hasText(newDescription)) {
             project.setDescription(newDescription);
         }
-        projectRepository.save(project);
+        Project updatedProject = projectRepository.save(project);
+        return toDto(updatedProject);
     }
 
     public void delete(Long id) {
@@ -64,22 +68,26 @@ public class ProjectService {
         projectRepository.delete(project);
     }
 
-    private Project getByIdOrThrowNotFound(long id) {
-        ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
-                .field(ProjectDto.FIELD_ID)
-                .message("Project with id " + id + " does not exist.")
-                .build();
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(exceptionDetailHolder));
+    private ProjectDto toDto(Project project) {
+        return ProjectMapper.INSTANCE.toDto(project);
     }
 
     private void throwIfNameAlreadyTaken(String projectName) {
         if (projectRepository.existsByName(projectName)) {
             ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
                     .field(ProjectDto.FIELD_NAME)
-                    .message("Project with name \"" + projectName + "\" does not exist.")
+                    .message("Project with name \"" + projectName + "\" does not exist")
                     .build();
             throw new RecordAlreadyExistsException(exceptionDetailHolder);
         }
+    }
+
+    private Project getByIdOrThrowNotFound(long id) {
+        ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
+                .field(ProjectDto.FIELD_ID)
+                .message("Project with id " + id + " does not exist")
+                .build();
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
     }
 }

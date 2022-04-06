@@ -41,7 +41,7 @@ CREATE TABLE tickets (
     type VARCHAR(30) CHECK (type IN ('Bug', 'Vulnerability', 'Feature Request', 'Refactoring', 'Other')) NOT NULL,
     status VARCHAR(30) CHECK(status IN ('New', 'Assigned', 'In Progress', 'Submitted', 'Extra Work Required', 'Resolved')) NOT NULL,
     priority VARCHAR(30) CHECK(priority IN ('Critical', 'High', 'Medium', 'Low', 'None')) NOT NULL,
-    target_res_date DATE NOT NULL,
+    target_res_date DATE,
     actual_res_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL

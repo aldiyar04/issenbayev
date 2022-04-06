@@ -8,7 +8,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ProjectUpdateReq {
-    private Long id;
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 }

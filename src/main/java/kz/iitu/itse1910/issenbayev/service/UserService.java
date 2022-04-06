@@ -6,10 +6,8 @@ import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserPaginatedResp;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.exception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
-import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.entity.User_;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.*;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -17,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -24,10 +23,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public UserPaginatedResp getUsers(Pageable pageable, String role, Boolean isAssignedToProject) {
         Page<User> resultUserPage = null;
 
@@ -35,13 +36,7 @@ public class UserService {
             resultUserPage = userRepository.findAll(pageable);
         } else if (isAssignedToProject != null &&
                 (role == null || !(role.equals(UserDto.ROLE_LEAD_DEV) || role.equals(UserDto.ROLE_DEVELOPER)))) {
-            String exMsg = String.format("%s can be used only if %s is specified as \"%s\" or \"%s\"",
-                    UserDto.FILTER_IS_ASSIGNED_TO_PROJECT, UserDto.FIELD_ROLE,
-                    UserDto.ROLE_LEAD_DEV, UserDto.ROLE_DEVELOPER);
-            ApiExceptionDetailHolder detailHolder = ApiExceptionDetailHolder.builder()
-                    .message(exMsg)
-                    .build();
-            throw new ApiException(detailHolder);
+            throwApiExInvalidCombinationOfParams();
         } else if (role != null) {
             if (isAssignedToProject == null) {
                 resultUserPage = userRepository.findAll(getRoleSpecification(role), pageable);
@@ -64,8 +59,15 @@ public class UserService {
         return UserPaginatedResp.fromUserPage(resultUserPage);
     }
 
+    private void throwApiExInvalidCombinationOfParams() {
+        String exMsg = String.format("%s can be used only if %s is specified as '%s' or '%s'",
+                UserDto.FILTER_IS_ASSIGNED_TO_PROJECT, UserDto.FIELD_ROLE,
+                UserDto.ROLE_LEAD_DEV, UserDto.ROLE_DEVELOPER);
+        throw new ApiException(exMsg);
+    }
+
     private Specification<User> getRoleSpecification(String role) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User.COLUMN_ROLE),
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
                 toUserEntityRole(role));
     }
 
@@ -80,7 +82,12 @@ public class UserService {
             return User.ROLE_DEVELOPER;
         }
         throw new IllegalStateException("This line cannot be reached since: 1) all the possible valid user roles are " +
-                "checked in this method; 2) user role is validated in User Controller.");
+                "checked before in this method; 2) user role is validated in User Controller.");
+    }
+
+    public UserDto getById(long id) {
+        User user = getByIdOrThrowNotFound(id);
+        return toDto(user);
     }
 
     public UserDto register(UserSignupReq signupReq) {
@@ -88,11 +95,33 @@ public class UserService {
         User user = toEntity(signupReq);
         user.setRole(User.ROLE_DEVELOPER);
         User savedUser = userRepository.save(user);
-        return toResponse(savedUser);
+        return toDto(savedUser);
     }
 
-    public void changePassword(UserPasswdChangeReq passChangeReq) {
-        long id = passChangeReq.getId();
+    public UserDto update(long id, UserUpdateReq updateReq) {
+        User user = getByIdOrThrowNotFound(id);
+
+        String newRole = updateReq.getRole();
+        String newEmail = updateReq.getEmail();
+        String newUsername = updateReq.getUsername();
+
+        throwIfAlreadyTaken(newEmail, newUsername);
+
+        if (StringUtils.hasText(newRole)) {
+            user.setRole(newRole);
+        }
+        if (StringUtils.hasText(newEmail)) {
+            user.setEmail(newEmail);
+        }
+        if (StringUtils.hasText(newUsername)) {
+            user.setUsername(newUsername);
+        }
+
+        User updatedUser = userRepository.save(user);
+        return toDto(updatedUser);
+    }
+
+    public void changePassword(long id, UserPasswdChangeReq passChangeReq) {
         User user = getByIdOrThrowNotFound(id);
 
         String supplied = passChangeReq.getOldPassword();
@@ -104,30 +133,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserDto update(UserUpdateReq updateReq) {
-        User user = getByIdOrThrowNotFound(updateReq.getId());
-
-        String newRole = updateReq.getNewRole();
-        String newEmail = updateReq.getNewEmail();
-        String newUsername = updateReq.getNewUsername();
-
-        throwIfAlreadyTaken(newEmail, newUsername);
-
-        if (StringUtils.hasText(newRole)) {
-            throwIfRoleInvalid(newRole);
-            user.setRole(newRole);
-        }
-        if (StringUtils.hasText(newEmail)) {
-            user.setEmail(newEmail);
-        }
-        if (StringUtils.hasText(newUsername)) {
-            user.setUsername(newUsername);
-        }
-
-        User updatedUser = userRepository.save(user);
-        return toResponse(updatedUser);
-    }
-
     public void delete(Long id) {
         User user = getByIdOrThrowNotFound(id);
         userRepository.delete(user);
@@ -137,7 +142,7 @@ public class UserService {
         return UserMapper.INSTANCE.toEntity(signupReq);
     }
 
-    private UserDto toResponse(User user) {
+    private UserDto toDto(User user) {
         return UserMapper.INSTANCE.toDto(user);
     }
 
@@ -145,41 +150,36 @@ public class UserService {
         boolean isUsernameTaken = userRepository.existsByUsername(username);
         boolean isEmailTaken = userRepository.existsByEmail(email);
 
-        List<ApiExceptionDetailHolder> exceptionDetailHolders = new ArrayList<>();
+        List<ApiExceptionDetailHolder> exDetailHolders = new ArrayList<>();
         if (isEmailTaken) {
-            exceptionDetailHolders.add(ApiExceptionDetailHolder.builder()
+            exDetailHolders.add(ApiExceptionDetailHolder.builder()
                     .field(UserDto.FIELD_EMAIL)
-                    .message("Email \"" + email + "\" is already taken.")
+                    .message("Email '" + email + "' is already taken")
                     .build());
         }
         if (isUsernameTaken) {
-            exceptionDetailHolders.add(ApiExceptionDetailHolder.builder()
+            exDetailHolders.add(ApiExceptionDetailHolder.builder()
                     .field(UserDto.FIELD_USERNAME)
-                    .message("Username \"" + username + "\" is already taken.")
+                    .message("Username '" + username + "' is already taken")
                     .build());
         }
-        throw new RecordAlreadyExistsException(exceptionDetailHolders);
+        if (!exDetailHolders.isEmpty()) {
+            throw new RecordAlreadyExistsException(exDetailHolders);
+        }
     }
 
     private User getByIdOrThrowNotFound(long id) {
-        ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
+        ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
                 .field(UserDto.FIELD_ID)
-                .message("User with id " + id + " does not exist.")
+                .message("User with id " + id + " does not exist")
                 .build();
         return userRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException(exceptionDetailHolder));
+                .orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
     }
 
     private void throwIfPasswordNotMatches(String actualPassword, String expectedPassword) {
         if (!Objects.equals(expectedPassword, actualPassword)) {
-            throw new IllegalArgumentException("Password incorrect");
-        }
-    }
-
-    private void throwIfRoleInvalid(String role) {
-        if (!role.equals(User.ROLE_ADMIN) && !role.equals(User.ROLE_MANAGER) &&
-                !role.equals(User.ROLE_LEAD_DEV) && !role.equals(User.ROLE_DEVELOPER)) {
-            throw new IllegalArgumentException("Role invalid");
+            throw new IncorrectPasswordException();
         }
     }
 }

@@ -1,4 +1,76 @@
-﻿**Project idea**
+﻿## REST API endpoints
+
+### Note:
+#### All resources support pagination (query params "page" and "size" can be specified).
+#### All fields in update requests are optional.
+
+### Users
+- /users GET
+  - Query params (all are optional):
+  - role. Valid options: "developer", "lead-dev", "manager", "admin".
+  - is-assigned-to-project (true/false). Can be used only if role is "developer" or "lead-dev".
+- /users/{id} GET
+- /users POST
+  - UserSignupRequest example:
+  - {
+  - "email": "example@email.com",
+  - "username": "myusername",
+  - "password": "rockyou"
+  - }
+- /users/{id} PUT
+  - UserUpdateRequest example:
+  - {
+  - "role": "manager",
+  - "email": "newemail@gmail.com",
+  - "username": "mynewusername"
+  - }
+- /users/{id} DELETE
+
+### Projects
+- /projects GET
+- /projects/{id} GET
+- /projects POST
+  - ProjectCreationRequest example:
+  - {
+  - "name": "Bug Tracker",
+  - "description": "An application that lets developers track bugs in software projects they build."
+  - }
+- /projects/{id} PUT
+- ProjectUpdateRequest example:
+- {
+- "name": "Issue Tracker",
+- "description": "An application that lets developers track issues in software projects they build."
+- }
+- /projects/{id} DELETE
+
+### Tickets
+- /projects/{id}/tickets GET
+- /projects/{id}/tickets/{id} GET
+- /projects/{id}/tickets POST
+  - TicketCreationRequest:
+  - {
+  - "title": "Title",
+  - "description": "Description",
+  - "submitterId": [can be any user's ID or NULL],
+  - "type": [Valid options: 'Bug', 'Vulnerability', 'Feature Request', 'Refactoring', 'Other'],
+  - "status": [Valid options: 'New', 'Assigned', 'In Progress', 'Submitted', 'Extra Work Required', 'Resolved'],
+  - "priority": [Valid options: 'Critical', 'High', 'Medium', 'Low', 'None']
+  - }
+- /projects/{id}/tickets/{id} PUT
+  - TicketUpdateRequest:
+  - {
+  - "title": "Title",
+  - "description": "Description",
+  - "assigneeId": [if not NULL, must be the ID of a user with role "developer", "lead-dev", or "admin"],
+  - "type": [Valid options: 'Bug', 'Vulnerability', 'Feature Request', 'Refactoring', 'Other'],
+  - "status": [Valid options: 'New', 'Assigned', 'In Progress', 'Submitted', 'Extra Work Required', 'Resolved'],
+  - "priority": [Valid options: 'Critical', 'High', 'Medium', 'Low', 'None'],
+  - }
+- /projects/{id}/tickets/{id} DELETE
+
+
+
+**Project idea**
 
 Bug tracker is an application that lets developers track issues in software projects they build.
 

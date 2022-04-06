@@ -19,12 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 public class Project extends BaseEntity {
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_DESCRIPTION = "description";
-    public static final String COLUMN_LEAD_DEV_ID = "lead_dev_id";
-    public static final String COLUMN_CREATED_ON = "created_on";
-    public static final String COLUMN_UPDATED_ON = "updated_on";
-
     @Column(name = "name")
     private String name;
 
@@ -49,6 +43,9 @@ public class Project extends BaseEntity {
     )
     private List<User> assignees;
 
+    @OneToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "project")
+    private List<Ticket> tickets;
+
     @PrePersist
     private void setCreatedOnUpdatedOn() {
         createdOn = LocalDate.now();
@@ -62,15 +59,13 @@ public class Project extends BaseEntity {
                 ", version=" + version +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                leadDev() +
-                ", leadDevUsername=" + leadDev.getUsername() +
+                ", leadDev=" + leadDev() +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 '}';
     }
 
     private String leadDev() {
-        return leadDev == null ? ", leadDev=null" :
-                ", leadDevId=" + leadDev.getId();
+        return leadDev == null ? "null" : "" + leadDev.getId();
     }
 }

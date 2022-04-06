@@ -10,8 +10,13 @@ import org.springframework.lang.NonNull;
 
 import javax.persistence.QueryHint;
 import java.util.List;
+import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+    @Query("select t from Ticket t where t.project.id = :projectId")
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
-    Page<Ticket> findAll(@NonNull Pageable pageable);
+    Page<Ticket> findAll(@NonNull Pageable pageable, Long projectId);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    Optional<Ticket> findById(@NonNull Long id);
 }
