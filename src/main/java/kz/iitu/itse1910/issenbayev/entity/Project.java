@@ -5,7 +5,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,6 +19,12 @@ import java.util.List;
 @Getter
 @Setter
 public class Project extends BaseEntity {
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_DESCRIPTION = "description";
+    public static final String COLUMN_LEAD_DEV_ID = "lead_dev_id";
+    public static final String COLUMN_CREATED_ON = "created_on";
+    public static final String COLUMN_UPDATED_ON = "updated_on";
+
     @Column(name = "name")
     private String name;
 
@@ -48,11 +53,6 @@ public class Project extends BaseEntity {
     private void setCreatedOnUpdatedOn() {
         createdOn = LocalDate.now();
         updatedOn = LocalDate.now();
-    }
-
-    @AssertTrue(message = "Lead dev must have the role of lead dev")
-    public boolean isLeadDevRoleConsistent() {
-        return leadDev == null || leadDev.getRole().equals(User.ROLE_LEAD_DEV);
     }
 
     @Override

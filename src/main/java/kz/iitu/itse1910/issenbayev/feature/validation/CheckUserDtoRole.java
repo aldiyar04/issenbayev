@@ -7,10 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = {UserRoleValidator.class})
-@Target({ElementType.FIELD})
+@Constraint(validatedBy = {UserDtoRoleValidator.class})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CheckUserRole {
+public @interface CheckUserDtoRole {
     String message() default "User role is invalid";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

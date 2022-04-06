@@ -1,7 +1,7 @@
 package kz.iitu.itse1910.issenbayev.feature.mapper;
 
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
-import kz.iitu.itse1910.issenbayev.dto.user.response.UserResp;
+import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    UserResp toResponse(User user);
+    UserDto toDto(User user);
 
     @Mapping(target = "password", source = "password")
     User toEntity(UserSignupReq signupReq);

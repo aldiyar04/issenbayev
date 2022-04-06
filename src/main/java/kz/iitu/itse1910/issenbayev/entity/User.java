@@ -1,6 +1,5 @@
 package kz.iitu.itse1910.issenbayev.entity;
 
-import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserRole;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -19,13 +18,18 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity {
+    public static final String COLUMN_ROLE = "role";
+    public static final String COLUMN_EMAIL = "email";
+    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_PASSWORD = "password";
+    public static final String COLUMN_CREATED_ON = "created_on";
+
     public static final String ROLE_ADMIN = "Admin";
     public static final String ROLE_MANAGER = "Manager";
     public static final String ROLE_LEAD_DEV = "Lead Dev";
     public static final String ROLE_DEVELOPER = "Developer";
 
     @Column
-    @CheckUserRole
     private String role;
 
     @Column

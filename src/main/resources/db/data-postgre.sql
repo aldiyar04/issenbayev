@@ -13,13 +13,19 @@ INSERT INTO users (role, email, username, password) VALUES
 INSERT INTO projects (name, description, lead_dev_id) VALUES
     ('Text Editor',
         'Notepad style application that can open, edit, and save text documents.',
-        4),
+        null),
     ('RSS Feed Creator',
         'A program which can read in text from other sources and put it in RSS or Atom news format for syndication.',
         5),
     ('Text to HTML Generator',
         'Converts text files into web HTML files and stylizes them. Great for making online documentation of standard text documentation',
         6);
+
+INSERT INTO project_assignees (project_id, assignee_id) VALUES
+    (1, 8),
+    (1, 9),
+    (2, 10);
+
 
 INSERT INTO tickets (title, project_id, submitter_id, type, status, priority, target_res_date) VALUES
     ('Issue 1', 1, 2, 'Bug', 'New', 'High', '2022-03-12'),

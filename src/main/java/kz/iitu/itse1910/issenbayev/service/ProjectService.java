@@ -2,7 +2,7 @@ package kz.iitu.itse1910.issenbayev.service;
 
 import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectCreationReq;
 import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectResp;
+import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
 import kz.iitu.itse1910.issenbayev.entity.Project;
 import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
 import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProjectRepository projectRepository;
 
-    public List<ProjectResp> getAllProjects(Pageable pageable) {
+    public List<ProjectDto> getAllProjects(Pageable pageable) {
         List<Project> projectEntities = projectRepository.findAll(pageable).toList();
         return projectEntities.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    private ProjectResp toResponse(Project project) {
+    private ProjectDto toResponse(Project project) {
         return ProjectMapper.INSTANCE.toResponse(project);
     }
 
@@ -66,7 +66,7 @@ public class ProjectService {
 
     private Project getByIdOrThrowNotFound(long id) {
         ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
-                .field(ProjectResp.FIELD_ID)
+                .field(ProjectDto.FIELD_ID)
                 .message("Project with id " + id + " does not exist.")
                 .build();
         return projectRepository.findById(id)
@@ -76,7 +76,7 @@ public class ProjectService {
     private void throwIfNameAlreadyTaken(String projectName) {
         if (projectRepository.existsByName(projectName)) {
             ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
-                    .field(ProjectResp.FIELD_NAME)
+                    .field(ProjectDto.FIELD_NAME)
                     .message("Project with name \"" + projectName + "\" does not exist.")
                     .build();
             throw new RecordAlreadyExistsException(exceptionDetailHolder);
