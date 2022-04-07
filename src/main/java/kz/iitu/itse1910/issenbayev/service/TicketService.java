@@ -146,7 +146,7 @@ public class TicketService {
     }
 
     private void throwIfInappropriateRole(User assignee) {
-        if (assignee.getRole().equals(User.ROLE_MANAGER)) {
+        if (assignee.getRole().equals(User.Role.MANAGER)) {
             String exMsg = String.format("User with role '%s' cannot be an assignee. " +
                     "Only users of the following roles can: %s, %s, %s.", assignee.getRole(),
                     UserDto.ROLE_DEVELOPER, UserDto.ROLE_LEAD_DEV, UserDto.ROLE_ADMIN);

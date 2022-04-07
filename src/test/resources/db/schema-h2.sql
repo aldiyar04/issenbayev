@@ -41,7 +41,7 @@ CREATE TABLE tickets (
     type VARCHAR(30) NOT NULL,
     status VARCHAR(30) NOT NULL,
     priority VARCHAR(30) NOT NULL,
-    target_res_date DATE NOT NULL,
+    target_res_date DATE,
     actual_res_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

@@ -2,6 +2,7 @@ package kz.iitu.itse1910.issenbayev.dto.user.response;
 
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 
 @Builder
 @Getter
+@EqualsAndHashCode
 @ToString
 public class UserDto {
     public static final String FIELD_ID = "id";

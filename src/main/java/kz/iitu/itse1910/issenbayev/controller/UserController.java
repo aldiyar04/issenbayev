@@ -9,9 +9,12 @@ import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserDtoRole;
 import kz.iitu.itse1910.issenbayev.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.InetSocketAddress;
 
 @RestController
 @RequestMapping("/users")

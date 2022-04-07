@@ -6,14 +6,13 @@ import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserPaginatedResp;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.entity.User_;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.*;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
+import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -27,6 +26,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserRoleSpecification roleSpec;
 
     @Transactional(readOnly = true)
     public UserPaginatedResp getUsers(Pageable pageable, String role, Boolean isAssignedToProject) {
@@ -39,7 +39,7 @@ public class UserService {
             throwApiExInvalidCombinationOfParams();
         } else if (role != null) {
             if (isAssignedToProject == null) {
-                resultUserPage = userRepository.findAll(getRoleSpecification(role), pageable);
+                resultUserPage = userRepository.findAll(roleSpec.getFor(role), pageable);
             } else {
                 if (role.equals(UserDto.ROLE_LEAD_DEV)) {
                     if (!isAssignedToProject) {
@@ -66,25 +66,6 @@ public class UserService {
         throw new ApiException(exMsg);
     }
 
-    private Specification<User> getRoleSpecification(String role) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
-                toUserEntityRole(role));
-    }
-
-    private String toUserEntityRole(String userDtoRole) {
-        if (userDtoRole.equals(UserDto.ROLE_ADMIN)) {
-            return User.ROLE_ADMIN;
-        } else if (userDtoRole.equals(UserDto.ROLE_MANAGER)) {
-            return User.ROLE_MANAGER;
-        } else if (userDtoRole.equals(UserDto.ROLE_LEAD_DEV)) {
-            return User.ROLE_LEAD_DEV;
-        } else if (userDtoRole.equals(UserDto.ROLE_DEVELOPER)) {
-            return User.ROLE_DEVELOPER;
-        }
-        throw new IllegalStateException("This line cannot be reached since: 1) all the possible valid user roles are " +
-                "checked before in this method; 2) user role is validated in User Controller.");
-    }
-
     public UserDto getById(long id) {
         User user = getByIdOrThrowNotFound(id);
         return toDto(user);
@@ -93,7 +74,7 @@ public class UserService {
     public UserDto register(UserSignupReq signupReq) {
         throwIfAlreadyTaken(signupReq.getEmail(), signupReq.getUsername());
         User user = toEntity(signupReq);
-        user.setRole(User.ROLE_DEVELOPER);
+        user.setRole(User.Role.DEVELOPER);
         User savedUser = userRepository.save(user);
         return toDto(savedUser);
     }

@@ -1,6 +1,7 @@
 ﻿## REST API endpoints
 
 ### Note:
+#### Swagger UI URL: http://localhost:8080/swagger-ui/index.html
 #### All resources support pagination (query params "page" and "size" can be specified).
 #### All fields in update requests are optional.
 
@@ -45,7 +46,7 @@
 
 ### Tickets
 - /projects/{id}/tickets GET
-- /projects/{id}/tickets/{id} GET
+- /projects/{id}/tickets/{id} GET 
 - /projects/{id}/tickets POST
   - TicketCreationRequest:
   - {
