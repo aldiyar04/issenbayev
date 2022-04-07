@@ -9,15 +9,27 @@ import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserDtoRole;
 import kz.iitu.itse1910.issenbayev.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.InetSocketAddress;
 
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping("/url-of-other-resources")
+    public ResponseEntity<String> getUrlOfOtherResources(@RequestHeader HttpHeaders httpHeaders) {
+        InetSocketAddress host = httpHeaders.getHost();
+        String projectsUrl = "http://" + host.getHostName() + ":" + host.getPort() + "/projects";
+        String ticketsUrl = "http://" + host.getHostName() + ":" + host.getPort() + "/tickets";
+        String resp = String.format("Projects URL: %s\nTickets URL: %s", projectsUrl, ticketsUrl);
+        return ResponseEntity.ok().body(resp);
+    }
 
     @GetMapping
     public ResponseEntity<UserPaginatedResp> getUsers(Pageable pageable,
