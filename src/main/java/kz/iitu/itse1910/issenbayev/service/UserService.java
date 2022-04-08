@@ -102,17 +102,18 @@ public class UserService {
         return toDto(updatedUser);
     }
 
-    public void changePassword(long id, UserPasswdChangeReq passChangeReq) {
-        User user = getByIdOrThrowNotFound(id);
-
-        String supplied = passChangeReq.getOldPassword();
-        String expected = user.getPassword();
-        throwIfPasswordNotMatches(supplied, expected);
-
-        String newPassword = passChangeReq.getNewPassword();
-        user.setPassword(newPassword);
-        userRepository.save(user);
-    }
+    // TODO: uncomment when password hashing is implemented
+//    public void changePassword(long id, UserPasswdChangeReq passChangeReq) {
+//        User user = getByIdOrThrowNotFound(id);
+//
+//        String supplied = passChangeReq.getOldPassword();
+//        String expected = user.getPassword();
+//        throwIfPasswordNotMatches(supplied, expected);
+//
+//        String newPassword = passChangeReq.getNewPassword();
+//        user.setPassword(newPassword);
+//        userRepository.save(user);
+//    }
 
     public void delete(Long id) {
         User user = getByIdOrThrowNotFound(id);
@@ -158,9 +159,10 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
     }
 
-    private void throwIfPasswordNotMatches(String actualPassword, String expectedPassword) {
-        if (!Objects.equals(expectedPassword, actualPassword)) {
-            throw new IncorrectPasswordException();
-        }
-    }
+    // TODO: uncomment and change impl when password hashing is implemented
+//    private void throwIfPasswordNotMatches(String actualPassword, String expectedPassword) {
+//        if (!Objects.equals(expectedPassword, actualPassword)) {
+//            throw new IncorrectPasswordException();
+//        }
+//    }
 }

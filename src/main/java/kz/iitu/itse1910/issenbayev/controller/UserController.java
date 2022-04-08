@@ -50,12 +50,13 @@ public class UserController {
         return ResponseEntity.ok().body(updatedUser);
     }
 
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void changePassword(@PathVariable("id") long id,
-                               @RequestBody UserPasswdChangeReq passwdChangeReq) {
-        userService.changePassword(id, passwdChangeReq);
-    }
+    // TODO: uncomment when password hashing is implemented
+//    @PatchMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void changePassword(@PathVariable("id") long id,
+//                               @RequestBody UserPasswdChangeReq passwdChangeReq) {
+//        userService.changePassword(id, passwdChangeReq);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
