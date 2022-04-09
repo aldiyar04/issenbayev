@@ -79,7 +79,7 @@ class UserServiceTest {
         // given
         String managerRole = UserDto.Role.MANAGER;
         Boolean isAssignedToProject = null;
-        when(userRepository.findAll(pageRequest, managerRole))
+        when(userRepository.findAll(pageRequest, UserDto.Role.toUserRole(managerRole)))
                 .thenReturn(new PageImpl<>(users.getAllManagers()));
 
         // when
@@ -96,7 +96,7 @@ class UserServiceTest {
         // given
         String leadDevRole = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = null;
-        when(userRepository.findAll(pageRequest, leadDevRole))
+        when(userRepository.findAll(pageRequest, UserDto.Role.toUserRole(leadDevRole)))
                 .thenReturn(new PageImpl<>(users.getAllLeadDevs()));
 
         // when
@@ -113,7 +113,7 @@ class UserServiceTest {
         // given
         String developerRole = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = null;
-        when(userRepository.findAll(pageRequest, developerRole))
+        when(userRepository.findAll(pageRequest, UserDto.Role.toUserRole(developerRole)))
                 .thenReturn(new PageImpl<>(users.getAllDevelopers()));
 
         // when
@@ -323,7 +323,7 @@ class UserServiceTest {
                 .email(newEmail)
                 .username(newUsername)
                 .build();
-        when(userRepository.insert(any())).thenReturn(updatedUser);
+        when(userRepository.update(any())).thenReturn(updatedUser);
         User userOldVersion = User.builder().id(id).build();
         when(userRepository.findById(id)).thenReturn(Optional.of(userOldVersion));
 
@@ -337,7 +337,7 @@ class UserServiceTest {
 
         // then
         ArgumentCaptor<User> userArgCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).insert(userArgCaptor.capture());
+        verify(userRepository).update(userArgCaptor.capture());
         User capturedUser = userArgCaptor.getValue();
         assertThat(capturedUser.getId()).isEqualTo(id);
         assertThat(capturedUser.getRole()).isEqualTo(newRole);
