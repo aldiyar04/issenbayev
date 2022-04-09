@@ -49,6 +49,10 @@ public class User extends BaseEntity {
         this.createdOn = createdOn;
     }
 
+    public static class Field {
+        public static final String CREATED_ON = "created_on";
+    }
+
     public static class Role {
         public static final String ADMIN = "Admin";
         public static final String MANAGER = "Manager";

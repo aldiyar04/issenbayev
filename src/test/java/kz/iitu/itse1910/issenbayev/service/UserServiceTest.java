@@ -8,7 +8,6 @@ import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
-import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import kz.iitu.itse1910.issenbayev.service.testdata.UserTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +28,6 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Mock
     UserRepository userRepository;
-    @Mock
-    UserRoleSpecification roleSpec;
     @InjectMocks
     UserService underTest;
 
@@ -66,10 +62,8 @@ class UserServiceTest {
         // given
         String adminRole = UserDto.Role.ADMIN;
         Boolean isAssignedToProject = null;
-        Specification<User> adminRoleSpec = roleSpecTestUtil.getForAdmin();
-        when(userRepository.findAll(adminRoleSpec, pageRequest))
+        when(userRepository.findAll(pageRequest, UserDto.Role.toUserRole(adminRole)))
                 .thenReturn(new PageImpl<>(users.getAllAdmins()));
-        when(roleSpec.getFor(adminRole)).thenReturn(adminRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -85,10 +79,8 @@ class UserServiceTest {
         // given
         String managerRole = UserDto.Role.MANAGER;
         Boolean isAssignedToProject = null;
-        Specification<User> managerRoleSpec = roleSpecTestUtil.getForManager();
-        when(userRepository.findAll(managerRoleSpec, pageRequest))
+        when(userRepository.findAll(pageRequest, managerRole))
                 .thenReturn(new PageImpl<>(users.getAllManagers()));
-        when(roleSpec.getFor(managerRole)).thenReturn(managerRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -104,10 +96,8 @@ class UserServiceTest {
         // given
         String leadDevRole = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = null;
-        Specification<User> leadDevRoleSpec = roleSpecTestUtil.getForLeadDev();
-        when(userRepository.findAll(leadDevRoleSpec, pageRequest))
+        when(userRepository.findAll(pageRequest, leadDevRole))
                 .thenReturn(new PageImpl<>(users.getAllLeadDevs()));
-        when(roleSpec.getFor(leadDevRole)).thenReturn(leadDevRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -123,10 +113,8 @@ class UserServiceTest {
         // given
         String developerRole = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = null;
-        Specification<User> developerRoleSpec = roleSpecTestUtil.getForDeveloper();
-        when(userRepository.findAll(developerRoleSpec, pageRequest))
+        when(userRepository.findAll(pageRequest, developerRole))
                 .thenReturn(new PageImpl<>(users.getAllDevelopers()));
-        when(roleSpec.getFor(developerRole)).thenReturn(developerRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -259,7 +247,7 @@ class UserServiceTest {
                 .email(email)
                 .username(username)
                 .build();
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.insert(any())).thenReturn(user);
         when(userRepository.existsByEmail(email)).thenReturn(false);
         when(userRepository.existsByUsername(username)).thenReturn(false);
 
@@ -269,7 +257,7 @@ class UserServiceTest {
 
         // then
         ArgumentCaptor<User> userArgCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userArgCaptor.capture());
+        verify(userRepository).insert(userArgCaptor.capture());
         User capturedUser = userArgCaptor.getValue();
         assertThat(capturedUser.getRole()).isEqualTo(defaultRole);
         assertThat(capturedUser.getEmail()).isEqualTo(email);
@@ -335,7 +323,7 @@ class UserServiceTest {
                 .email(newEmail)
                 .username(newUsername)
                 .build();
-        when(userRepository.save(any())).thenReturn(updatedUser);
+        when(userRepository.insert(any())).thenReturn(updatedUser);
         User userOldVersion = User.builder().id(id).build();
         when(userRepository.findById(id)).thenReturn(Optional.of(userOldVersion));
 
@@ -349,7 +337,7 @@ class UserServiceTest {
 
         // then
         ArgumentCaptor<User> userArgCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userArgCaptor.capture());
+        verify(userRepository).insert(userArgCaptor.capture());
         User capturedUser = userArgCaptor.getValue();
         assertThat(capturedUser.getId()).isEqualTo(id);
         assertThat(capturedUser.getRole()).isEqualTo(newRole);

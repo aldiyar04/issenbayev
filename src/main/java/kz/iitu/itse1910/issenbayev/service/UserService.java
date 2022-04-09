@@ -11,10 +11,8 @@ import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyE
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
-import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +27,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final UserRoleSpecification roleSpec;
 
     @Transactional(readOnly = true)
     public UserPaginatedResp getUsers(Pageable pageable,
@@ -44,7 +41,7 @@ public class UserService {
         } else if (roleOptional.isPresent()) {
             String role = roleOptional.get();
             if (isAssignedToProjectOptional.isEmpty()) {
-                resultUserPage = userRepository.findAll(roleSpec.getFor(role), pageable);
+                resultUserPage = userRepository.findAll(pageable, UserDto.Role.toUserRole(role));
             } else {
                 boolean isAssignedToProject = isAssignedToProjectOptional.get();
                 if (role.equals(UserDto.Role.LEAD_DEV) && !isAssignedToProject) {
@@ -85,7 +82,7 @@ public class UserService {
         throwIfAlreadyTaken(signupReq.getEmail(), signupReq.getUsername());
         User user = toEntity(signupReq);
         user.setRole(User.Role.DEVELOPER);
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.insert(user);
         return toDto(savedUser);
     }
 
@@ -108,7 +105,7 @@ public class UserService {
             user.setUsername(newUsername);
         }
 
-        User updatedUser = userRepository.save(user);
+        User updatedUser = userRepository.update(user);
         return toDto(updatedUser);
     }
 

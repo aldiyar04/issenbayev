@@ -1,9 +1,6 @@
 package kz.iitu.itse1910.issenbayev.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode
 public abstract class BaseEntity implements Serializable {
 
@@ -23,5 +21,6 @@ public abstract class BaseEntity implements Serializable {
 
     @Version
     @Column(name = "version")
+    @Setter(AccessLevel.NONE)
     Long version = 1L;
 }

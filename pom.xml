@@ -68,6 +68,8 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+<!--			Spring Boot uses H2 version 1.4.200 by default, which doesn't return auto-generated IDs on insert-->
+			<version>1.4.196</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

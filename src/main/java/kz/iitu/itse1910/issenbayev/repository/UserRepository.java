@@ -11,36 +11,22 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.QueryHint;
+import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
-    Page<User> findAll(@NonNull Pageable pageable);
+public interface UserRepository {
+    Page<User> findAll(Pageable pageable);
+    Page<User> findAll(Pageable pageable, String role);
 
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
-    Page<User> findAll(@NonNull Specification<User> specification, @NonNull Pageable pageable);
-
-    // TODO: use metamodel field instead of hardcoded role "Lead Dev":
-    @Query("select u from User u where u.role = 'Lead Dev' and " +
-            "(select count(p) from Project p where p.leadDev = u) = 0")
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<User> findUnassignedLeadDevs(Pageable pageable);
-
-    @Query("select u from User u where u.role = 'Lead Dev' and " +
-            "(select count(p) from Project p where p.leadDev = u) = 1")
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<User> findAssignedLeadDevs(Pageable pageable);
-
-    @Query("select u from User u where u.role = 'Developer' and " +
-            "(select count(assignee) from Project p join p.assignees assignee where assignee = u) = 0")
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<User> findUnassignedDevelopers(Pageable pageable);
-
-    @Query("select u from User u where u.role = 'Developer' and " +
-            "(select count(assignee) from Project p join p.assignees assignee where assignee = u) = 1")
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<User> findAssignedDevelopers(Pageable pageable);
 
-    boolean existsByUsername(String username);
+    Optional<User> findById(long id);
+    User insert(User user);
+    User update(User user);
+    void delete(User user);
 
+    boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 }

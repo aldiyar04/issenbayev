@@ -1,6 +1,7 @@
 package kz.iitu.itse1910.issenbayev.dto.user.response;
 
 
+import kz.iitu.itse1910.issenbayev.entity.User;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,5 +37,19 @@ public class UserDto {
         public static final String MANAGER = "manager";
         public static final String LEAD_DEV = "lead-dev";
         public static final String DEVELOPER = "developer";
+
+        public static String toUserRole(String userDtoRole) {
+            if (userDtoRole.equals(UserDto.Role.ADMIN)) {
+                return User.Role.ADMIN;
+            } else if (userDtoRole.equals(UserDto.Role.MANAGER)) {
+                return User.Role.MANAGER;
+            } else if (userDtoRole.equals(UserDto.Role.LEAD_DEV)) {
+                return User.Role.LEAD_DEV;
+            } else if (userDtoRole.equals(UserDto.Role.DEVELOPER)) {
+                return User.Role.DEVELOPER;
+            }
+            throw new IllegalStateException("Invalid user role passed. " +
+                    "Role must be validated before reaching this method.");
+        }
     }
 }

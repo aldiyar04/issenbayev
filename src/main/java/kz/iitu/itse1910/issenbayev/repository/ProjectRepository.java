@@ -8,9 +8,12 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.QueryHint;
+import java.util.Optional;
 
-public interface ProjectRepository extends JpaRepository<Project, Long> {
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+public interface ProjectRepository {
     Page<Project> findAll(@NonNull Pageable pageable);
+    Optional<Project> findById(long id);
+    Project save(Project project);
+    Project delete(Project project);
     boolean existsByName(String name);
 }
