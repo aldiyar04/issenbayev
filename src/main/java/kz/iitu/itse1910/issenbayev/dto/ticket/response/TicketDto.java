@@ -1,6 +1,7 @@
 package kz.iitu.itse1910.issenbayev.dto.ticket.response;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Getter
+@EqualsAndHashCode
 @ToString
 public class TicketDto {
     private final Long id;
@@ -45,5 +47,30 @@ public class TicketDto {
         public static final String ACTUAL_RES_DATE = "actualResDate";
         public static final String CREATED_AT = "createdAt";
         public static final String UPDATED_AT = "updatedAt";
+    }
+
+    public static class Type {
+        public static final String BUG = "bug";
+        public static final String VULNERABILITY = "vulnerability";
+        public static final String FEATURE_REQUEST = "feature-request";
+        public static final String REFACTORING = "refactoring";
+        public static final String OTHER = "other";
+    }
+
+    public static class Status {
+        public static final String NEW = "new";
+        public static final String ASSIGNED = "assigned";
+        public static final String IN_PROGRESS = "in-progress";
+        public static final String SUBMITTED = "submitted";
+        public static final String EXTRA_WORK_REQUIRED = "extra-work-required";
+        public static final String RESOLVED = "resolved";
+    }
+
+    public static class Priority {
+        public static final String CRITICAL = "critical";
+        public static final String HIGH = "high";
+        public static final String MEDIUM = "medium";
+        public static final String LOW = "low";
+        public static final String NONE = "none";
     }
 }

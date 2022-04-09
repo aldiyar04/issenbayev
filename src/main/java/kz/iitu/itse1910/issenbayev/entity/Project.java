@@ -13,11 +13,11 @@ import java.util.List;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Project extends BaseEntity {
     @Column(name = "name")
     private String name;
@@ -50,6 +50,19 @@ public class Project extends BaseEntity {
     private void setCreatedOnUpdatedOn() {
         createdOn = LocalDate.now();
         updatedOn = LocalDate.now();
+    }
+
+    @Builder
+    public Project(Long id, Long version, String name, String description, User leadDev,
+                   LocalDate createdOn, LocalDate updatedOn, List<User> assignees, List<Ticket> tickets) {
+        super(id, version);
+        this.name = name;
+        this.description = description;
+        this.leadDev = leadDev;
+        this.createdOn = createdOn;
+        this.updatedOn = updatedOn;
+        this.assignees = assignees;
+        this.tickets = tickets;
     }
 
     @Override

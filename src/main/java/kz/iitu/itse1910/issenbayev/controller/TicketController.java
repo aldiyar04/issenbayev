@@ -23,9 +23,8 @@ public class TicketController {
     }
 
     @GetMapping("/projects/{projectId}/tickets/{id}")
-    public ResponseEntity<TicketDto> getTicketById(Pageable pageable,
-                                                          @PathVariable("projectId") long projectId,
-                                                          @PathVariable("id") long id) {
+    public ResponseEntity<TicketDto> getTicketById(@PathVariable("projectId") long projectId,
+                                                   @PathVariable("id") long id) {
         TicketDto ticket = ticketService.getById(projectId, id);
         return ResponseEntity.ok().body(ticket);
     }

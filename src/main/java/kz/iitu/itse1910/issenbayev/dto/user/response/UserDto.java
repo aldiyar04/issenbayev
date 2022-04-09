@@ -13,22 +13,28 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @ToString
 public class UserDto {
-    public static final String FIELD_ID = "id";
-    public static final String FIELD_ROLE = "role";
-    public static final String FIELD_EMAIL = "email";
-    public static final String FIELD_USERNAME = "username";
-    public static final String FIELD_CREATED_ON = "created-on";
-
-    public static final String FILTER_IS_ASSIGNED_TO_PROJECT = "is-assigned-to-project";
-
-    public static final String ROLE_ADMIN = "admin";
-    public static final String ROLE_MANAGER = "manager";
-    public static final String ROLE_LEAD_DEV = "lead-dev";
-    public static final String ROLE_DEVELOPER = "developer";
-
     private final Long id;
     private final String role;
     private final String email;
     private final String username;
     private final LocalDate createdOn;
+
+    public static class Field {
+        public static final String ID = "id";
+        public static final String ROLE = "role";
+        public static final String EMAIL = "email";
+        public static final String USERNAME = "username";
+        public static final String CREATED_ON = "created-on";
+    }
+
+    public static class Filter {
+        public static final String IS_ASSIGNED_TO_PROJECT = "is-assigned-to-project";
+    }
+
+    public static class Role {
+        public static final String ADMIN = "admin";
+        public static final String MANAGER = "manager";
+        public static final String LEAD_DEV = "lead-dev";
+        public static final String DEVELOPER = "developer";
+    }
 }

@@ -1,17 +1,20 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserPasswdChangeReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserPaginatedResp;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.*;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,41 +32,48 @@ public class UserService {
     private final UserRoleSpecification roleSpec;
 
     @Transactional(readOnly = true)
-    public UserPaginatedResp getUsers(Pageable pageable, String role, Boolean isAssignedToProject) {
+    public UserPaginatedResp getUsers(Pageable pageable,
+                                      Optional<String> roleOptional,
+                                      Optional<Boolean> isAssignedToProjectOptional) {
+        throwIfInvalidCombinationOfParams(isAssignedToProjectOptional, roleOptional);
+
         Page<User> resultUserPage = null;
 
-        if (role == null && isAssignedToProject == null) {
+        if (roleOptional.isEmpty() && isAssignedToProjectOptional.isEmpty()) {
             resultUserPage = userRepository.findAll(pageable);
-        } else if (isAssignedToProject != null &&
-                (role == null || !(role.equals(UserDto.ROLE_LEAD_DEV) || role.equals(UserDto.ROLE_DEVELOPER)))) {
-            throwApiExInvalidCombinationOfParams();
-        } else if (role != null) {
-            if (isAssignedToProject == null) {
+        } else if (roleOptional.isPresent()) {
+            String role = roleOptional.get();
+            if (isAssignedToProjectOptional.isEmpty()) {
                 resultUserPage = userRepository.findAll(roleSpec.getFor(role), pageable);
             } else {
-                if (role.equals(UserDto.ROLE_LEAD_DEV)) {
-                    if (!isAssignedToProject) {
-                        resultUserPage = userRepository.findUnassignedLeadDevs(pageable);
-                    } else {
-                        resultUserPage = userRepository.findAssignedLeadDevs(pageable);
-                    }
-                } else if (role.equals(UserDto.ROLE_DEVELOPER)) {
-                    if (!isAssignedToProject) {
-                        resultUserPage = userRepository.findUnassignedDevelopers(pageable);
-                    } else {
-                        resultUserPage = userRepository.findAssignedDevelopers(pageable);
-                    }
+                boolean isAssignedToProject = isAssignedToProjectOptional.get();
+                if (role.equals(UserDto.Role.LEAD_DEV) && !isAssignedToProject) {
+                    resultUserPage = userRepository.findUnassignedLeadDevs(pageable);
+                } else if (role.equals(UserDto.Role.LEAD_DEV) && isAssignedToProject) {
+                    resultUserPage = userRepository.findAssignedLeadDevs(pageable);
+                } else if (role.equals(UserDto.Role.DEVELOPER) && !isAssignedToProject) {
+                    resultUserPage = userRepository.findUnassignedDevelopers(pageable);
+                } else if (role.equals(UserDto.Role.DEVELOPER) && isAssignedToProject) {
+                    resultUserPage = userRepository.findAssignedDevelopers(pageable);
                 }
             }
         }
         return UserPaginatedResp.fromUserPage(resultUserPage);
     }
 
-    private void throwApiExInvalidCombinationOfParams() {
-        String exMsg = String.format("%s can be used only if %s is specified as '%s' or '%s'",
-                UserDto.FILTER_IS_ASSIGNED_TO_PROJECT, UserDto.FIELD_ROLE,
-                UserDto.ROLE_LEAD_DEV, UserDto.ROLE_DEVELOPER);
-        throw new ApiException(exMsg);
+    private void throwIfInvalidCombinationOfParams(Optional<Boolean> isAssignedToProjectOptional,
+                                                   Optional<String> roleOptional) {
+        if (isAssignedToProjectOptional.isPresent() &&
+                (roleOptional.isEmpty() || !isRoleAppropriateWhenIsAssignedToProjectPresent(roleOptional.get()))) {
+            String exMsg = String.format("%s can be used only if %s is specified as '%s' or '%s'",
+                    UserDto.Filter.IS_ASSIGNED_TO_PROJECT, UserDto.Field.ROLE,
+                    UserDto.Role.LEAD_DEV, UserDto.Role.DEVELOPER);
+            throw new ApiException(exMsg);
+        }
+    }
+
+    private boolean isRoleAppropriateWhenIsAssignedToProjectPresent(String role) {
+        return role.equals(UserDto.Role.LEAD_DEV) || role.equals(UserDto.Role.DEVELOPER);
     }
 
     public UserDto getById(long id) {
@@ -135,13 +145,13 @@ public class UserService {
         List<ApiExceptionDetailHolder> exDetailHolders = new ArrayList<>();
         if (isEmailTaken) {
             exDetailHolders.add(ApiExceptionDetailHolder.builder()
-                    .field(UserDto.FIELD_EMAIL)
+                    .field(UserDto.Field.EMAIL)
                     .message("Email '" + email + "' is already taken")
                     .build());
         }
         if (isUsernameTaken) {
             exDetailHolders.add(ApiExceptionDetailHolder.builder()
-                    .field(UserDto.FIELD_USERNAME)
+                    .field(UserDto.Field.USERNAME)
                     .message("Username '" + username + "' is already taken")
                     .build());
         }
@@ -152,7 +162,7 @@ public class UserService {
 
     private User getByIdOrThrowNotFound(long id) {
         ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                .field(UserDto.FIELD_ID)
+                .field(UserDto.Field.ID)
                 .message("User with id " + id + " does not exist")
                 .build();
         return userRepository.findById(id)

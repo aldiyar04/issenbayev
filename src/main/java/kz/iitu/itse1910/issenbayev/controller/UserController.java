@@ -1,6 +1,5 @@
 package kz.iitu.itse1910.issenbayev.controller;
 
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserPasswdChangeReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
@@ -9,12 +8,10 @@ import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserDtoRole;
 import kz.iitu.itse1910.issenbayev.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.InetSocketAddress;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -27,7 +24,8 @@ public class UserController {
                                                   @RequestParam(required = false) @CheckUserDtoRole String role,
                                                   @RequestParam(required = false, value = "is-assigned-to-project")
                                                                   Boolean isAssignedToProject) {
-        UserPaginatedResp resp = userService.getUsers(pageable, role, isAssignedToProject);
+        UserPaginatedResp resp = userService.getUsers(pageable,
+                Optional.ofNullable(role), Optional.ofNullable(isAssignedToProject));
         return ResponseEntity.ok().body(resp);
     }
 

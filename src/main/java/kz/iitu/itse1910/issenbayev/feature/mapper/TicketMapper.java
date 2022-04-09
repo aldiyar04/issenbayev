@@ -5,6 +5,7 @@ import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
 import kz.iitu.itse1910.issenbayev.entity.Ticket;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ValueMapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper

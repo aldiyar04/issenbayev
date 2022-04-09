@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Ticket extends BaseEntity {
     @Column(name = "title")
     private String title;
@@ -64,6 +64,26 @@ public class Ticket extends BaseEntity {
         updatedAt = LocalDateTime.now();
     }
 
+    @Builder
+    public Ticket(Long id, Long version, String title, String description, Project project,
+                  User assignee, User submitter, String type, String status, String priority,
+                  LocalDate targetResolutionDate, LocalDate actualResolutionDate,
+                  LocalDateTime createdAt, LocalDateTime updatedAt) {
+        super(id, version);
+        this.title = title;
+        this.description = description;
+        this.project = project;
+        this.assignee = assignee;
+        this.submitter = submitter;
+        this.type = type;
+        this.status = status;
+        this.priority = priority;
+        this.targetResolutionDate = targetResolutionDate;
+        this.actualResolutionDate = actualResolutionDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Ticket{" +
@@ -72,7 +92,6 @@ public class Ticket extends BaseEntity {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", projectId=" + project.getId() +
-                ", projectName=" + project.getName() +
                 ", assigneeId=" + (assignee == null ? "null" : "" + assignee.getId()) +
                 ", submitterId=" + (submitter == null ? "=null" : "" + submitter.getId()) +
                 ", type='" + type + '\'' +
@@ -83,5 +102,30 @@ public class Ticket extends BaseEntity {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
+    }
+
+    public static class Type {
+        public static final String BUG = "Bug";
+        public static final String VULNERABILITY = "Vulnerability";
+        public static final String FEATURE_REQUEST = "Feature Request";
+        public static final String REFACTORING = "Refactoring";
+        public static final String OTHER = "Other";
+    }
+
+    public static class Status {
+        public static final String NEW = "New";
+        public static final String ASSIGNED = "Assigned";
+        public static final String IN_PROGRESS = "In Progress";
+        public static final String SUBMITTED = "Submitted";
+        public static final String EXTRA_WORK_REQUIRED = "Extra Work Required";
+        public static final String RESOLVED = "Resolved";
+    }
+
+    public static class Priority {
+        public static final String CRITICAL = "Critical";
+        public static final String HIGH = "High";
+        public static final String MEDIUM = "Medium";
+        public static final String LOW = "Low";
+        public static final String NONE = "None";
     }
 }

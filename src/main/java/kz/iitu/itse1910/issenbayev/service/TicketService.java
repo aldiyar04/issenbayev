@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
-
 @Service
 @Transactional
 @AllArgsConstructor
@@ -80,7 +78,7 @@ public class TicketService {
             ticket.setDescription(newDescription);
         }
         if (assigneeId != null) {
-            User assignee = getUserByIdOrThrowNotFound(id);
+            User assignee = getUserByIdOrThrowNotFound(assigneeId);
             throwIfInappropriateRole(assignee);
             ticket.setAssignee(assignee);
         }
@@ -123,7 +121,7 @@ public class TicketService {
 
     private Project getProjectByIdOrThrowNotFound(long id) {
         ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                .field(ProjectDto.FIELD_ID)
+                .field(ProjectDto.Field.ID)
                 .message("Project with id " + id + " does not exist")
                 .build();
         return projectRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
@@ -139,7 +137,7 @@ public class TicketService {
 
     private User getUserByIdOrThrowNotFound(long id) {
         ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                .field(ProjectDto.FIELD_ID)
+                .field(ProjectDto.Field.ID)
                 .message("User with id " + id + " does not exist")
                 .build();
         return userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
@@ -148,10 +146,10 @@ public class TicketService {
     private void throwIfInappropriateRole(User assignee) {
         if (assignee.getRole().equals(User.Role.MANAGER)) {
             String exMsg = String.format("User with role '%s' cannot be an assignee. " +
-                    "Only users of the following roles can: %s, %s, %s.", assignee.getRole(),
-                    UserDto.ROLE_DEVELOPER, UserDto.ROLE_LEAD_DEV, UserDto.ROLE_ADMIN);
+                    "Only users of the following roles can: '%s', '%s', '%s'.", assignee.getRole(),
+                    UserDto.Role.DEVELOPER, UserDto.Role.LEAD_DEV, UserDto.Role.ADMIN);
             ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                    .field(UserDto.FIELD_ROLE)
+                    .field(UserDto.Field.ROLE)
                     .message(exMsg)
                     .build();
             throw new ApiException(exDetailHolder);

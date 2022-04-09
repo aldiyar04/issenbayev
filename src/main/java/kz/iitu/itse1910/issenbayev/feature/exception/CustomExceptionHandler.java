@@ -1,7 +1,6 @@
 package kz.iitu.itse1910.issenbayev.feature.exception;
 
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.IncorrectPasswordException;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -36,9 +35,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             message = "Record Not Found";
         } else if (ex instanceof RecordAlreadyExistsException) {
             message = "Record Already Exists";
-        } else if (ex instanceof IncorrectPasswordException) {
-            message = "Provided password is incorrect";
-        } else {
+        }
+//        else if (ex instanceof IncorrectPasswordException) {
+//            message = "Provided password is incorrect";
+//        }
+        else {
             message = "Invalid use of API";
         }
         ErrorResponse error = new ErrorResponse(message, ex.getDetailHolders());

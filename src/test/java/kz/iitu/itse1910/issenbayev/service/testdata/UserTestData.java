@@ -90,7 +90,7 @@ public class UserTestData {
     @Getter
     public static class Dto {
         @Getter(AccessLevel.NONE)
-        private final UserTestData.Entity entities = new UserTestData.Entity();
+        private final Entity entities = new Entity();
 
         private final UserDto admin = toDto(entities.getAdmin());
         private final UserDto manager = toDto(entities.getManager());

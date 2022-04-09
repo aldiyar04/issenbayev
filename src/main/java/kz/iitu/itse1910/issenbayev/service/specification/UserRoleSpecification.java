@@ -14,13 +14,13 @@ public class UserRoleSpecification {
     }
 
     private String toUserEntityRole(String userDtoRole) {
-        if (userDtoRole.equals(UserDto.ROLE_ADMIN)) {
+        if (userDtoRole.equals(UserDto.Role.ADMIN)) {
             return User.Role.ADMIN;
-        } else if (userDtoRole.equals(UserDto.ROLE_MANAGER)) {
+        } else if (userDtoRole.equals(UserDto.Role.MANAGER)) {
             return User.Role.MANAGER;
-        } else if (userDtoRole.equals(UserDto.ROLE_LEAD_DEV)) {
+        } else if (userDtoRole.equals(UserDto.Role.LEAD_DEV)) {
             return User.Role.LEAD_DEV;
-        } else if (userDtoRole.equals(UserDto.ROLE_DEVELOPER)) {
+        } else if (userDtoRole.equals(UserDto.Role.DEVELOPER)) {
             return User.Role.DEVELOPER;
         }
         throw new IllegalStateException("Invalid user role passed. Role must be validated before reaching this method.");

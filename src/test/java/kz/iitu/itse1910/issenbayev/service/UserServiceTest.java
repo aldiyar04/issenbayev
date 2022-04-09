@@ -53,7 +53,9 @@ class UserServiceTest {
         when(userRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(users.getAllUsers()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, role, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest,
+                Optional.ofNullable(role), Optional.ofNullable(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAllUsers());
@@ -62,7 +64,7 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAdmins_whenRoleAdminAndIsAssignedNull() {
         // given
-        String adminRole = UserDto.ROLE_ADMIN;
+        String adminRole = UserDto.Role.ADMIN;
         Boolean isAssignedToProject = null;
         Specification<User> adminRoleSpec = roleSpecTestUtil.getForAdmin();
         when(userRepository.findAll(adminRoleSpec, pageRequest))
@@ -70,7 +72,9 @@ class UserServiceTest {
         when(roleSpec.getFor(adminRole)).thenReturn(adminRoleSpec);
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, adminRole, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest,
+                        Optional.of(adminRole), Optional.ofNullable(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAllAdmins());
@@ -79,7 +83,7 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnManagers_whenRoleManagerAndIsAssignedNull() {
         // given
-        String managerRole = UserDto.ROLE_MANAGER;
+        String managerRole = UserDto.Role.MANAGER;
         Boolean isAssignedToProject = null;
         Specification<User> managerRoleSpec = roleSpecTestUtil.getForManager();
         when(userRepository.findAll(managerRoleSpec, pageRequest))
@@ -87,7 +91,9 @@ class UserServiceTest {
         when(roleSpec.getFor(managerRole)).thenReturn(managerRoleSpec);
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, managerRole, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest,
+                        Optional.of(managerRole), Optional.ofNullable(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAllManagers());
@@ -96,7 +102,7 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnLeadDevs_whenRoleLeadDevAndIsAssignedNull() {
         // given
-        String leadDevRole = UserDto.ROLE_LEAD_DEV;
+        String leadDevRole = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = null;
         Specification<User> leadDevRoleSpec = roleSpecTestUtil.getForLeadDev();
         when(userRepository.findAll(leadDevRoleSpec, pageRequest))
@@ -104,7 +110,9 @@ class UserServiceTest {
         when(roleSpec.getFor(leadDevRole)).thenReturn(leadDevRoleSpec);
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, leadDevRole, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest,
+                        Optional.of(leadDevRole), Optional.ofNullable(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAllLeadDevs());
@@ -113,7 +121,7 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnDevelopers_whenRoleDeveloperAndIsAssignedNull() {
         // given
-        String developerRole = UserDto.ROLE_DEVELOPER;
+        String developerRole = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = null;
         Specification<User> developerRoleSpec = roleSpecTestUtil.getForDeveloper();
         when(userRepository.findAll(developerRoleSpec, pageRequest))
@@ -121,7 +129,9 @@ class UserServiceTest {
         when(roleSpec.getFor(developerRole)).thenReturn(developerRoleSpec);
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, developerRole, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest,
+                        Optional.of(developerRole), Optional.ofNullable(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAllDevelopers());
@@ -130,13 +140,14 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnUnassignedLeadDevs_whenRoleLeadDevAndIsAssignedFalse() {
         // given
-        String role = UserDto.ROLE_LEAD_DEV;
+        String role = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = false;
         when(userRepository.findUnassignedLeadDevs(pageRequest))
                 .thenReturn(new PageImpl<>(users.getUnassignedLeadDevs()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, role, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getUnassignedLeadDevs());
@@ -145,13 +156,14 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAssignedLeadDevs_whenRoleLeadDevAndIsAssignedTrue() {
         // given
-        String role = UserDto.ROLE_LEAD_DEV;
+        String role = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = true;
         when(userRepository.findAssignedLeadDevs(pageRequest))
                 .thenReturn(new PageImpl<>(users.getAssignedLeadDevs()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, role, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAssignedLeadDevs());
@@ -160,13 +172,14 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnUnassignedDevelopers_whenRoleDeveloperAndIsAssignedFalse() {
         // given
-        String role = UserDto.ROLE_DEVELOPER;
+        String role = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = false;
         when(userRepository.findUnassignedDevelopers(pageRequest))
                 .thenReturn(new PageImpl<>(users.getUnassignedDevelopers()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, role, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getUnassignedDevelopers());
@@ -175,13 +188,14 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAssignedDevelopers_whenRoleDeveloperAndIsAssignedTrue() {
         // given
-        String role = UserDto.ROLE_DEVELOPER;
+        String role = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = true;
         when(userRepository.findAssignedDevelopers(pageRequest))
                 .thenReturn(new PageImpl<>(users.getAssignedDevelopers()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, role, isAssignedToProject).getUserDtos();
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+                .getUserDtos();
 
         // then
         assertThat(result).isEqualTo(userDtos.getAssignedDevelopers());
@@ -196,11 +210,14 @@ class UserServiceTest {
         Boolean isAssignedToProject = true;
 
         // when, then
-        assertThatThrownBy(() -> underTest.getUsers(pageRequest, nullRole, isAssignedToProject))
+        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
+                Optional.ofNullable(nullRole), Optional.of(isAssignedToProject)))
                 .isInstanceOf(ApiException.class);
-        assertThatThrownBy(() -> underTest.getUsers(pageRequest, adminRole, isAssignedToProject))
+        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
+                Optional.of(adminRole), Optional.of(isAssignedToProject)))
                 .isInstanceOf(ApiException.class);
-        assertThatThrownBy(() -> underTest.getUsers(pageRequest, managerRole, isAssignedToProject))
+        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
+                Optional.of(managerRole), Optional.of(isAssignedToProject)))
                 .isInstanceOf(ApiException.class);
     }
 
@@ -312,13 +329,13 @@ class UserServiceTest {
         String newRole = User.Role.LEAD_DEV;
         String newEmail = "new_email@test.com";
         String newUsername = "new_username";
-        User user = User.builder()
+        User updatedUser = User.builder()
                 .id(id)
                 .role(newRole)
                 .email(newEmail)
                 .username(newUsername)
                 .build();
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.save(any())).thenReturn(updatedUser);
         User userOldVersion = User.builder().id(id).build();
         when(userRepository.findById(id)).thenReturn(Optional.of(userOldVersion));
 
@@ -339,10 +356,10 @@ class UserServiceTest {
         assertThat(capturedUser.getEmail()).isEqualTo(newEmail);
         assertThat(capturedUser.getUsername()).isEqualTo(newUsername);
 
-        assertThat(result.getId()).isEqualTo(user.getId());
-        assertThat(result.getRole()).isEqualTo(user.getRole());
-        assertThat(result.getEmail()).isEqualTo(user.getEmail());
-        assertThat(result.getUsername()).isEqualTo(user.getUsername());
+        assertThat(result.getId()).isEqualTo(updatedUser.getId());
+        assertThat(result.getRole()).isEqualTo(updatedUser.getRole());
+        assertThat(result.getEmail()).isEqualTo(updatedUser.getEmail());
+        assertThat(result.getUsername()).isEqualTo(updatedUser.getUsername());
     }
 
     @Test

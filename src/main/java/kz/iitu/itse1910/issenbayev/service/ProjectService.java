@@ -75,7 +75,7 @@ public class ProjectService {
     private void throwIfNameAlreadyTaken(String projectName) {
         if (projectRepository.existsByName(projectName)) {
             ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
-                    .field(ProjectDto.FIELD_NAME)
+                    .field(ProjectDto.Field.NAME)
                     .message("Project with name \"" + projectName + "\" does not exist")
                     .build();
             throw new RecordAlreadyExistsException(exceptionDetailHolder);
@@ -84,7 +84,7 @@ public class ProjectService {
 
     private Project getByIdOrThrowNotFound(long id) {
         ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                .field(ProjectDto.FIELD_ID)
+                .field(ProjectDto.Field.ID)
                 .message("Project with id " + id + " does not exist")
                 .build();
         return projectRepository.findById(id)

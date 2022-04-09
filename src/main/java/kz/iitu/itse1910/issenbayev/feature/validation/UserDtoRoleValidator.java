@@ -11,9 +11,9 @@ public class UserDtoRoleValidator implements ConstraintValidator<CheckUserDtoRol
 
     @Override
     public boolean isValid(String role, ConstraintValidatorContext constraintValidatorContext) {
-        return Objects.equals(role, UserDto.ROLE_DEVELOPER) ||
-                Objects.equals(role, UserDto.ROLE_LEAD_DEV) ||
-                Objects.equals(role, UserDto.ROLE_MANAGER) ||
-                Objects.equals(role, UserDto.ROLE_ADMIN);
+        return Objects.equals(role, UserDto.Role.DEVELOPER) ||
+                Objects.equals(role, UserDto.Role.LEAD_DEV) ||
+                Objects.equals(role, UserDto.Role.MANAGER) ||
+                Objects.equals(role, UserDto.Role.ADMIN);
     }
 }
