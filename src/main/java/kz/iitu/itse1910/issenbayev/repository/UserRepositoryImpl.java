@@ -168,7 +168,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Component
-    private static final class UserJdbcMapper implements RowMapper<User> {
+    private static class UserJdbcMapper implements RowMapper<User> {
+        public UserJdbcMapper() {}
+
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             return User.builder()
@@ -181,7 +183,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private static final class InsertUser extends SqlUpdate {
+    private static class InsertUser extends SqlUpdate {
         private static final String SQL_INSERT_USER = "insert into users " +
                 "(" + User_.ROLE + ", " + User_.EMAIL + ", " + User_.USERNAME + ", " + User_.PASSWORD +  ", "
                 + User.Field.CREATED_ON + ") " +
@@ -198,7 +200,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private static final class UpdateUser extends SqlUpdate {
+    private static class UpdateUser extends SqlUpdate {
         private static final String SQL_UPDATE_USER = "update users set " +
                 User_.ROLE + "=:" + User_.ROLE +
                 ", " + User_.EMAIL + "=:" + User_.EMAIL +

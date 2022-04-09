@@ -2,12 +2,14 @@ package kz.iitu.itse1910.issenbayev.feature.exception.apiexception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Getter
+@ToString
 public class ApiException extends RuntimeException {
     private final List<ApiExceptionDetailHolder> detailHolders;
 

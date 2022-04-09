@@ -6,14 +6,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.QueryHint;
 import java.util.Optional;
 
-public interface ProjectRepository {
+@Repository
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<Project> findAll(@NonNull Pageable pageable);
-    Optional<Project> findById(long id);
-    Project save(Project project);
-    Project delete(Project project);
     boolean existsByName(String name);
 }
+//public interface ProjectRepository {
+//    Page<Project> findAll(@NonNull Pageable pageable);
+//    Optional<Project> findById(long id);
+//    Project save(Project project);
+//    Project delete(Project project);
+//    boolean existsByName(String name);
+//}
