@@ -8,10 +8,19 @@ import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserDtoRole;
 import kz.iitu.itse1910.issenbayev.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+<<<<<<< HEAD
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+=======
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.InetSocketAddress;
+>>>>>>> 668af1cd1d62363e2ccc9bff1df7f77a54868e02
 
 @RestController
 @RequestMapping("/users")
