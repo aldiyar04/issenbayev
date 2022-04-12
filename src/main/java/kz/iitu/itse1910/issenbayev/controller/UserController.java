@@ -1,10 +1,10 @@
 package kz.iitu.itse1910.issenbayev.controller;
 
+import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserPaginatedResp;
-import kz.iitu.itse1910.issenbayev.feature.validation.CheckUserDtoRole;
 import kz.iitu.itse1910.issenbayev.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,31 +21,32 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserPaginatedResp> getUsers(Pageable pageable,
-                                                  @RequestParam(required = false) @CheckUserDtoRole String role,
-                                                  @RequestParam(required = false, value = "is-assigned-to-project")
-                                                                  Boolean isAssignedToProject) {
+                                                  @RequestParam(name = UserApi.Filter.ROLE, required = false)
+                                                          UserDto.Role role,
+                                                  @RequestParam(name = UserApi.Filter.IS_ASSIGNED_TO_PROJECT,
+                                                          required = false) Boolean isAssignedToProject) {
         UserPaginatedResp resp = userService.getUsers(pageable,
                 Optional.ofNullable(role), Optional.ofNullable(isAssignedToProject));
-        return ResponseEntity.ok().body(resp);
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable("id") long id) {
         UserDto user = userService.getById(id);
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping
     public ResponseEntity<UserDto> registerUser(@RequestBody UserSignupReq signupReq) {
         UserDto createdUser = userService.register(signupReq);
-        return ResponseEntity.ok().body(createdUser);
+        return ResponseEntity.ok(createdUser);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("id") long id,
                                               @RequestBody UserUpdateReq updateReq) {
         UserDto updatedUser = userService.update(id, updateReq);
-        return ResponseEntity.ok().body(updatedUser);
+        return ResponseEntity.ok(updatedUser);
     }
 
     // TODO: uncomment when password hashing is implemented

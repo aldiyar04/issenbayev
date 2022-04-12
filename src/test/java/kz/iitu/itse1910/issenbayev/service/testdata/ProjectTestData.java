@@ -46,7 +46,7 @@ public class ProjectTestData {
         public Dto() {
             Entity entities = new Entity();
             this.projectDtos = entities.getAllProjects().stream()
-                    .map(ProjectMapper.INSTANCE::toDto)
+                    .map(ProjectMapper.INSTANCE::entityToDto)
                     .collect(Collectors.toList());
         }
 

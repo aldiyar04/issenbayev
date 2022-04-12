@@ -20,7 +20,7 @@ public class TicketPaginatedResp {
 
     public static TicketPaginatedResp fromTicketPage(Page<Ticket> ticketPage) {
         List<TicketDto> ticketDtos = ticketPage.getContent().stream()
-                .map(TicketMapper.INSTANCE::toDto)
+                .map(TicketMapper.INSTANCE::entityToDto)
                 .collect(Collectors.toList());
         return new TicketPaginatedResp(ticketDtos, ticketPage.getTotalPages());
     }

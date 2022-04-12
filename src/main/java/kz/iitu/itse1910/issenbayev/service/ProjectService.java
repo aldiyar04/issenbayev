@@ -37,11 +37,7 @@ public class ProjectService {
 
     public ProjectDto create(ProjectCreationReq creationReq) {
         throwIfNameAlreadyTaken(creationReq.getName());
-
-        Project project = Project.builder()
-                .name(creationReq.getName())
-                .description(creationReq.getDescription())
-                .build();
+        Project project = toEntity(creationReq);
         Project savedProject = projectRepository.save(project);
         return toDto(savedProject);
     }
@@ -69,7 +65,11 @@ public class ProjectService {
     }
 
     private ProjectDto toDto(Project project) {
-        return ProjectMapper.INSTANCE.toDto(project);
+        return ProjectMapper.INSTANCE.entityToDto(project);
+    }
+
+    private Project toEntity(ProjectCreationReq creationReq) {
+        return ProjectMapper.INSTANCE.creationReqToEntity(creationReq);
     }
 
     private void throwIfNameAlreadyTaken(String projectName) {

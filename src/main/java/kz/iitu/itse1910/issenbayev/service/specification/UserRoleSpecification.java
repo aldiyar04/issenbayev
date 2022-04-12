@@ -3,26 +3,18 @@ package kz.iitu.itse1910.issenbayev.service.specification;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.entity.User;
 import kz.iitu.itse1910.issenbayev.entity.User_;
+import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserRoleSpecification {
-    public Specification<User> getFor(String role) {
+    public Specification<User> getForUserDtoRole(UserDto.Role userDtoRole) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
-                toUserEntityRole(role));
+                toUserEntityRole(userDtoRole));
     }
 
-    private String toUserEntityRole(String userDtoRole) {
-        if (userDtoRole.equals(UserDto.Role.ADMIN)) {
-            return User.Role.ADMIN;
-        } else if (userDtoRole.equals(UserDto.Role.MANAGER)) {
-            return User.Role.MANAGER;
-        } else if (userDtoRole.equals(UserDto.Role.LEAD_DEV)) {
-            return User.Role.LEAD_DEV;
-        } else if (userDtoRole.equals(UserDto.Role.DEVELOPER)) {
-            return User.Role.DEVELOPER;
-        }
-        throw new IllegalStateException("Invalid user role passed. Role must be validated before reaching this method.");
+    private User.Role toUserEntityRole(UserDto.Role userDtoRole) {
+        return UserMapper.INSTANCE.toEntityRole(userDtoRole);
     }
 }

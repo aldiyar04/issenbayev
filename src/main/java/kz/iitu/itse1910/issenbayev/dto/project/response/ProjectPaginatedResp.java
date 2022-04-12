@@ -20,7 +20,7 @@ public class ProjectPaginatedResp {
 
     public static ProjectPaginatedResp fromProjectPage(Page<Project> projectPage) {
         List<ProjectDto> projectDtos = projectPage.getContent().stream()
-                .map(ProjectMapper.INSTANCE::toDto)
+                .map(ProjectMapper.INSTANCE::entityToDto)
                 .collect(Collectors.toList());
         return new ProjectPaginatedResp(projectDtos, projectPage.getTotalPages());
     }

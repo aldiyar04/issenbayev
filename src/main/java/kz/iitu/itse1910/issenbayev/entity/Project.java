@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,20 +20,20 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class Project extends BaseEntity {
-    @Column(name = "name")
+    @Column(name = DatabaseColumn.NAME)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = DatabaseColumn.DESCRIPTION)
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "lead_dev_id")
+    @JoinColumn(name = DatabaseColumn.LEAD_DEV_ID)
     private User leadDev;
 
-    @Column(name = "created_on")
+    @Column(name = DatabaseColumn.CREATED_ON)
     private LocalDate createdOn;
 
-    @Column(name = "updated_on")
+    @Column(name = DatabaseColumn.UPDATED_ON)
     private LocalDate updatedOn;
 
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -47,8 +48,12 @@ public class Project extends BaseEntity {
     private List<Ticket> tickets;
 
     @PrePersist
-    private void setCreatedOnUpdatedOn() {
+    private void setCreatedOn() {
         createdOn = LocalDate.now();
+    }
+
+    @PreUpdate
+    private void setUpdatedOn() {
         updatedOn = LocalDate.now();
     }
 
@@ -80,5 +85,13 @@ public class Project extends BaseEntity {
 
     private String leadDev() {
         return leadDev == null ? "null" : "" + leadDev.getId();
+    }
+
+    public static class DatabaseColumn {
+        public static final String NAME = "name";
+        public static final String DESCRIPTION = "description";
+        public static final String LEAD_DEV_ID = "lead_dev_id";
+        public static final String CREATED_ON = "created_on";
+        public static final String UPDATED_ON = "updated_on";
     }
 }

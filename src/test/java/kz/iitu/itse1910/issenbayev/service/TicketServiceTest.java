@@ -3,8 +3,6 @@ package kz.iitu.itse1910.issenbayev.service;
 import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketCreationReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketPaginatedResp;
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.entity.Project;
 import kz.iitu.itse1910.issenbayev.entity.Ticket;
 import kz.iitu.itse1910.issenbayev.entity.User;
@@ -17,7 +15,6 @@ import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.testdata.ProjectTestData;
 import kz.iitu.itse1910.issenbayev.service.testdata.TicketTestData;
 import kz.iitu.itse1910.issenbayev.service.testdata.UserTestData;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -147,9 +144,9 @@ class TicketServiceTest {
         String description = "description";
         Project project1 = projects.getProject1();
         User submitter = users.getAdmin();
-        String type = Ticket.Type.BUG;
-        String status = Ticket.Status.NEW;
-        String priority = Ticket.Priority.MEDIUM;
+        Ticket.Type type = Ticket.Type.BUG;
+        Ticket.Status status = Ticket.Status.NEW;
+        Ticket.Priority priority = Ticket.Priority.MEDIUM;
         Ticket ticket = Ticket.builder()
                 .title(title)
                 .description(description)
@@ -159,7 +156,7 @@ class TicketServiceTest {
                 .status(status)
                 .priority(priority)
                 .build();
-        TicketDto expected = TicketMapper.INSTANCE.toDto(ticket);
+        TicketDto expected = TicketMapper.INSTANCE.entityToDto(ticket);
         when(projectRepository.findById(project1.getId())).thenReturn(Optional.of(project1));
         when(userRepository.findById(submitter.getId())).thenReturn(Optional.of(submitter));
         when(ticketRepository.save(any())).thenReturn(ticket);
@@ -169,9 +166,9 @@ class TicketServiceTest {
                 .title(title)
                 .description(description)
                 .submitterId(submitter.getId())
-                .type(type)
-                .status(status)
-                .priority(priority)
+                .type(toDtoType(type))
+                .status(toDtoStatus(status))
+                .priority(toDtoPriority(priority))
                 .build();
         TicketDto result = underTest.create(project1.getId(), creationReq);
 
@@ -182,6 +179,18 @@ class TicketServiceTest {
         assertThat(savedTicket).isEqualTo(ticket);
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    private TicketDto.Type toDtoType(Ticket.Type entityType) {
+        return TicketMapper.INSTANCE.toDtoType(entityType);
+    }
+
+    private TicketDto.Status toDtoStatus(Ticket.Status entityStatus) {
+        return TicketMapper.INSTANCE.toDtoStatus(entityStatus);
+    }
+
+    private TicketDto.Priority toDtoPriority(Ticket.Priority entityPriority) {
+        return TicketMapper.INSTANCE.toDtoPriority(entityPriority);
     }
 
     @Test
@@ -222,9 +231,9 @@ class TicketServiceTest {
         String newTitle = "New Title";
         String newDescription = "New description...";
         User assignee = users.getDeveloper1();
-        String newType = Ticket.Type.OTHER;
-        String newStatus = Ticket.Status.EXTRA_WORK_REQUIRED;
-        String newPriority = Ticket.Priority.HIGH;
+        Ticket.Type newType = Ticket.Type.OTHER;
+        Ticket.Status newStatus = Ticket.Status.EXTRA_WORK_REQUIRED;
+        Ticket.Priority newPriority = Ticket.Priority.HIGH;
         Ticket updatedTicket = Ticket.builder()
                 .id(id)
                 .title(newTitle)
@@ -235,7 +244,7 @@ class TicketServiceTest {
                 .status(newStatus)
                 .priority(newPriority)
                 .build();
-        TicketDto expected = TicketMapper.INSTANCE.toDto(updatedTicket);
+        TicketDto expected = TicketMapper.INSTANCE.entityToDto(updatedTicket);
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project1));
         when(ticketRepository.findById(id)).thenReturn(Optional.of(tickets.getTicket1()));
         when(userRepository.findById(assignee.getId())).thenReturn(Optional.of(users.getDeveloper1()));
@@ -247,9 +256,9 @@ class TicketServiceTest {
                 .title(newTitle)
                 .description(newDescription)
                 .assigneeId(assignee.getId())
-                .type(newType)
-                .status(newStatus)
-                .priority(newPriority)
+                .type(toDtoType(newType))
+                .status(toDtoStatus(newStatus))
+                .priority(toDtoPriority(newPriority))
                 .build();
         TicketDto result = underTest.update(projectId, id, updateReq);
 

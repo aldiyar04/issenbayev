@@ -19,54 +19,58 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class Ticket extends BaseEntity {
-    @Column(name = "title")
+    @Column(name = DatabaseColumn.TITLE)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = DatabaseColumn.DESCRIPTION)
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = DatabaseColumn.PROJECT_ID)
     private Project project;
 
     @ManyToOne
-    @JoinColumn(name = "assignee_id")
+    @JoinColumn(name = DatabaseColumn.ASSIGNEE_ID)
     private User assignee;
 
     @ManyToOne
-    @JoinColumn(name = "submitter_id")
+    @JoinColumn(name = DatabaseColumn.SUBMITTER_ID)
     private User submitter;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = DatabaseColumn.TYPE)
+    private Type type;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = DatabaseColumn.STATUS)
+    private Status status;
 
-    @Column(name = "priority")
-    private String priority;
+    @Column(name = DatabaseColumn.PRIORITY)
+    private Priority priority;
 
-    @Column(name = "target_res_date")
+    @Column(name = DatabaseColumn.TARGET_RESOLUTION_DATE)
     private LocalDate targetResolutionDate;
 
-    @Column(name = "actual_res_date")
+    @Column(name = DatabaseColumn.ACTUAL_RESOLUTION_DATE)
     private LocalDate actualResolutionDate;
 
-    @Column(name = "created_at")
+    @Column(name = DatabaseColumn.CREATED_AT)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = DatabaseColumn.UPDATED_AT)
     private LocalDateTime updatedAt;
 
     @PrePersist
-    private void setCreatedOnUpdatedOn() {
+    private void setCreatedAt() {
         createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void setUpdatedAt() {
         updatedAt = LocalDateTime.now();
     }
 
     @Builder
     public Ticket(Long id, Long version, String title, String description, Project project,
-                  User assignee, User submitter, String type, String status, String priority,
+                  User assignee, User submitter, Type type, Status status, Priority priority,
                   LocalDate targetResolutionDate, LocalDate actualResolutionDate,
                   LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id, version);
@@ -104,28 +108,64 @@ public class Ticket extends BaseEntity {
                 '}';
     }
 
-    public static class Type {
-        public static final String BUG = "Bug";
-        public static final String VULNERABILITY = "Vulnerability";
-        public static final String FEATURE_REQUEST = "Feature Request";
-        public static final String REFACTORING = "Refactoring";
-        public static final String OTHER = "Other";
+    public static class DatabaseColumn {
+        public static final String TITLE = "title";
+        public static final String DESCRIPTION = "description";
+        public static final String PROJECT_ID = "project_id";
+        public static final String ASSIGNEE_ID = "assignee_id";
+        public static final String SUBMITTER_ID = "submitter_id";
+        public static final String TYPE = "type";
+        public static final String STATUS = "status";
+        public static final String PRIORITY = "priority";
+        public static final String TARGET_RESOLUTION_DATE = "target_res_date";
+        public static final String ACTUAL_RESOLUTION_DATE = "actual_res_date";
+        public static final String CREATED_AT = "created_at";
+        public static final String UPDATED_AT = "updated_at";
     }
 
-    public static class Status {
-        public static final String NEW = "New";
-        public static final String ASSIGNED = "Assigned";
-        public static final String IN_PROGRESS = "In Progress";
-        public static final String SUBMITTED = "Submitted";
-        public static final String EXTRA_WORK_REQUIRED = "Extra Work Required";
-        public static final String RESOLVED = "Resolved";
+    public enum Type {
+        BUG("Bug"), VULNERABILITY("Vulnerability"), FEATURE_REQUEST("Feature Request"),
+        REFACTORING("Refactoring"), OTHER("Other");
+
+        private final String type;
+
+        Type(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type;
+        }
     }
 
-    public static class Priority {
-        public static final String CRITICAL = "Critical";
-        public static final String HIGH = "High";
-        public static final String MEDIUM = "Medium";
-        public static final String LOW = "Low";
-        public static final String NONE = "None";
+    public enum Status {
+        NEW("New"), ASSIGNED("Assigned"), IN_PROGRESS("In Progress"), SUBMITTED("Submitted"),
+        EXTRA_WORK_REQUIRED("Extra Work Required"), RESOLVED("Resolved");
+
+        private final String status;
+
+        Status(String status) {
+            this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return status;
+        }
+    }
+
+    public enum Priority {
+        CRITICAL("Critical"), HIGH("High"), MEDIUM("Medium"), LOW("Low"), NONE("None");
+        private final String priority;
+
+        Priority(String priority) {
+            this.priority = priority;
+        }
+
+        @Override
+        public String toString() {
+            return priority;
+        }
     }
 }

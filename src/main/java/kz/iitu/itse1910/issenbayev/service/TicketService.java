@@ -66,9 +66,9 @@ public class TicketService {
         String newTitle = updateReq.getTitle();
         String newDescription = updateReq.getDescription();
         Long assigneeId = updateReq.getAssigneeId();
-        String newType = updateReq.getType();
-        String newStatus = updateReq.getStatus();
-        String newPriority = updateReq.getPriority();
+        Ticket.Type newType = toEntityType(updateReq.getType());
+        Ticket.Status newStatus = toEntityStatus(updateReq.getStatus());
+        Ticket.Priority newPriority = toEntityPriority(updateReq.getPriority());
 
         // TODO: add field validation in Ticket DTOs  (for type, status, priority, etc.)
         if (StringUtils.hasText(newTitle)) {
@@ -82,13 +82,13 @@ public class TicketService {
             throwIfInappropriateRole(assignee);
             ticket.setAssignee(assignee);
         }
-        if (StringUtils.hasText(newType)) {
+        if (newType != null) {
             ticket.setType(newType);
         }
-        if (StringUtils.hasText(newStatus)) {
+        if (newStatus != null) {
             ticket.setStatus(newStatus);
         }
-        if (StringUtils.hasText(newPriority)) {
+        if (newPriority != null) {
             ticket.setPriority(newPriority);
         }
 
@@ -112,11 +112,23 @@ public class TicketService {
     }
 
     private TicketDto toDto(Ticket ticket) {
-        return TicketMapper.INSTANCE.toDto(ticket);
+        return TicketMapper.INSTANCE.entityToDto(ticket);
     }
 
     private Ticket toEntity(TicketCreationReq creationReq) {
-        return TicketMapper.INSTANCE.toEntity(creationReq);
+        return TicketMapper.INSTANCE.creationReqToEntity(creationReq);
+    }
+
+    private Ticket.Type toEntityType(TicketDto.Type dtoType) {
+        return TicketMapper.INSTANCE.toEntityType(dtoType);
+    }
+
+    private Ticket.Status toEntityStatus(TicketDto.Status dtoStatus) {
+        return TicketMapper.INSTANCE.toEntityStatus(dtoStatus);
+    }
+
+    private Ticket.Priority toEntityPriority(TicketDto.Priority dtoPriority) {
+        return TicketMapper.INSTANCE.toEntityPriority(dtoPriority);
     }
 
     private Project getProjectByIdOrThrowNotFound(long id) {

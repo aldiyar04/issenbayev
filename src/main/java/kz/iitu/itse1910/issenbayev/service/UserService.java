@@ -1,5 +1,6 @@
 package kz.iitu.itse1910.issenbayev.service;
 
+import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
@@ -14,7 +15,6 @@ import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserPaginatedResp getUsers(Pageable pageable,
-                                      Optional<String> roleOptional,
+                                      Optional<UserDto.Role> roleOptional,
                                       Optional<Boolean> isAssignedToProjectOptional) {
         throwIfInvalidCombinationOfParams(isAssignedToProjectOptional, roleOptional);
 
@@ -42,9 +42,9 @@ public class UserService {
         if (roleOptional.isEmpty() && isAssignedToProjectOptional.isEmpty()) {
             resultUserPage = userRepository.findAll(pageable);
         } else if (roleOptional.isPresent()) {
-            String role = roleOptional.get();
+            UserDto.Role role = roleOptional.get();
             if (isAssignedToProjectOptional.isEmpty()) {
-                resultUserPage = userRepository.findAll(roleSpec.getFor(role), pageable);
+                resultUserPage = userRepository.findAll(roleSpec.getForUserDtoRole(role), pageable);
             } else {
                 boolean isAssignedToProject = isAssignedToProjectOptional.get();
                 if (role.equals(UserDto.Role.LEAD_DEV) && !isAssignedToProject) {
@@ -62,17 +62,17 @@ public class UserService {
     }
 
     private void throwIfInvalidCombinationOfParams(Optional<Boolean> isAssignedToProjectOptional,
-                                                   Optional<String> roleOptional) {
+                                                   Optional<UserDto.Role> roleOptional) {
         if (isAssignedToProjectOptional.isPresent() &&
                 (roleOptional.isEmpty() || !isRoleAppropriateWhenIsAssignedToProjectPresent(roleOptional.get()))) {
             String exMsg = String.format("%s can be used only if %s is specified as '%s' or '%s'",
-                    UserDto.Filter.IS_ASSIGNED_TO_PROJECT, UserDto.Field.ROLE,
-                    UserDto.Role.LEAD_DEV, UserDto.Role.DEVELOPER);
+                    UserApi.Filter.IS_ASSIGNED_TO_PROJECT, UserApi.Filter.ROLE,
+                    UserApi.Role.LEAD_DEV, UserApi.Role.DEVELOPER);
             throw new ApiException(exMsg);
         }
     }
 
-    private boolean isRoleAppropriateWhenIsAssignedToProjectPresent(String role) {
+    private boolean isRoleAppropriateWhenIsAssignedToProjectPresent(UserDto.Role role) {
         return role.equals(UserDto.Role.LEAD_DEV) || role.equals(UserDto.Role.DEVELOPER);
     }
 
@@ -92,13 +92,13 @@ public class UserService {
     public UserDto update(long id, UserUpdateReq updateReq) {
         User user = getByIdOrThrowNotFound(id);
 
-        String newRole = updateReq.getRole();
+        User.Role newRole = toEntityRole(updateReq.getRole());
         String newEmail = updateReq.getEmail();
         String newUsername = updateReq.getUsername();
 
         throwIfAlreadyTaken(newEmail, newUsername);
 
-        if (StringUtils.hasText(newRole)) {
+        if (newRole != null) {
             user.setRole(newRole);
         }
         if (StringUtils.hasText(newEmail)) {
@@ -131,11 +131,15 @@ public class UserService {
     }
 
     private User toEntity(UserSignupReq signupReq) {
-        return UserMapper.INSTANCE.toEntity(signupReq);
+        return UserMapper.INSTANCE.signupReqToEntity(signupReq);
     }
 
     private UserDto toDto(User user) {
         return UserMapper.INSTANCE.toDto(user);
+    }
+
+    private User.Role toEntityRole(UserDto.Role dtoRole) {
+        return UserMapper.INSTANCE.toEntityRole(dtoRole);
     }
 
     private void throwIfAlreadyTaken(String email, String username) {

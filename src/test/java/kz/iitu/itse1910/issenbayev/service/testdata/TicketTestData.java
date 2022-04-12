@@ -75,7 +75,7 @@ public class TicketTestData {
         private final TicketDto ticket6 = toDto(entities.getTicket6());
 
         private TicketDto toDto(Ticket ticket) {
-            return TicketMapper.INSTANCE.toDto(ticket);
+            return TicketMapper.INSTANCE.entityToDto(ticket);
         }
 
         public List<TicketDto> getAllTickets() {

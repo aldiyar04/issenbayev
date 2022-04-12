@@ -19,26 +19,26 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<ProjectPaginatedResp> getProjects(Pageable pageable) {
         ProjectPaginatedResp resp = projectService.getProjects(pageable);
-        return ResponseEntity.ok().body(resp);
+        return ResponseEntity.ok(resp);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDto> getProjectById(@PathVariable("id") long id) {
         ProjectDto project = projectService.getById(id);
-        return ResponseEntity.ok().body(project);
+        return ResponseEntity.ok(project);
     }
 
     @PostMapping
     public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectCreationReq creationReq) {
-        ProjectDto project = projectService.create(creationReq);
-        return ResponseEntity.ok().body(project);
+        ProjectDto createdProject = projectService.create(creationReq);
+        return ResponseEntity.ok(createdProject);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDto> updateProject(@PathVariable("id") long id,
                                                     @RequestBody ProjectUpdateReq updateReq) {
-        ProjectDto project = projectService.update(id, updateReq);
-        return ResponseEntity.ok().body(project);
+        ProjectDto updatedProject = projectService.update(id, updateReq);
+        return ResponseEntity.ok(updatedProject);
     }
 
     @DeleteMapping("/{id}")

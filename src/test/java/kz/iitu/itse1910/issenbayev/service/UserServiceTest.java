@@ -7,6 +7,7 @@ import kz.iitu.itse1910.issenbayev.entity.User;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
 import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import kz.iitu.itse1910.issenbayev.service.testdata.UserTestData;
@@ -48,7 +49,7 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAllUsers_whenRoleAndIsAssignedNull() {
         // given
-        String role = null;
+        UserDto.Role role = null;
         Boolean isAssignedToProject = null;
         when(userRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(users.getAllUsers()));
 
@@ -64,12 +65,12 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAdmins_whenRoleAdminAndIsAssignedNull() {
         // given
-        String adminRole = UserDto.Role.ADMIN;
+        UserDto.Role adminRole = UserDto.Role.ADMIN;
         Boolean isAssignedToProject = null;
         Specification<User> adminRoleSpec = roleSpecTestUtil.getForAdmin();
         when(userRepository.findAll(adminRoleSpec, pageRequest))
                 .thenReturn(new PageImpl<>(users.getAllAdmins()));
-        when(roleSpec.getFor(adminRole)).thenReturn(adminRoleSpec);
+        when(roleSpec.getForUserDtoRole(adminRole)).thenReturn(adminRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -83,12 +84,12 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnManagers_whenRoleManagerAndIsAssignedNull() {
         // given
-        String managerRole = UserDto.Role.MANAGER;
+        UserDto.Role managerRole = UserDto.Role.MANAGER;
         Boolean isAssignedToProject = null;
         Specification<User> managerRoleSpec = roleSpecTestUtil.getForManager();
         when(userRepository.findAll(managerRoleSpec, pageRequest))
                 .thenReturn(new PageImpl<>(users.getAllManagers()));
-        when(roleSpec.getFor(managerRole)).thenReturn(managerRoleSpec);
+        when(roleSpec.getForUserDtoRole(managerRole)).thenReturn(managerRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -102,12 +103,12 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnLeadDevs_whenRoleLeadDevAndIsAssignedNull() {
         // given
-        String leadDevRole = UserDto.Role.LEAD_DEV;
+        UserDto.Role leadDevRole = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = null;
         Specification<User> leadDevRoleSpec = roleSpecTestUtil.getForLeadDev();
         when(userRepository.findAll(leadDevRoleSpec, pageRequest))
                 .thenReturn(new PageImpl<>(users.getAllLeadDevs()));
-        when(roleSpec.getFor(leadDevRole)).thenReturn(leadDevRoleSpec);
+        when(roleSpec.getForUserDtoRole(leadDevRole)).thenReturn(leadDevRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -121,12 +122,12 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnDevelopers_whenRoleDeveloperAndIsAssignedNull() {
         // given
-        String developerRole = UserDto.Role.DEVELOPER;
+        UserDto.Role developerRole = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = null;
         Specification<User> developerRoleSpec = roleSpecTestUtil.getForDeveloper();
         when(userRepository.findAll(developerRoleSpec, pageRequest))
                 .thenReturn(new PageImpl<>(users.getAllDevelopers()));
-        when(roleSpec.getFor(developerRole)).thenReturn(developerRoleSpec);
+        when(roleSpec.getForUserDtoRole(developerRole)).thenReturn(developerRoleSpec);
 
         // when
         List<UserDto> result = underTest.getUsers(pageRequest,
@@ -140,13 +141,13 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnUnassignedLeadDevs_whenRoleLeadDevAndIsAssignedFalse() {
         // given
-        String role = UserDto.Role.LEAD_DEV;
+        UserDto.Role leadDevRole = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = false;
         when(userRepository.findUnassignedLeadDevs(pageRequest))
                 .thenReturn(new PageImpl<>(users.getUnassignedLeadDevs()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(leadDevRole), Optional.of(isAssignedToProject))
                 .getUserDtos();
 
         // then
@@ -156,13 +157,13 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAssignedLeadDevs_whenRoleLeadDevAndIsAssignedTrue() {
         // given
-        String role = UserDto.Role.LEAD_DEV;
+        UserDto.Role leadDevRole = UserDto.Role.LEAD_DEV;
         Boolean isAssignedToProject = true;
         when(userRepository.findAssignedLeadDevs(pageRequest))
                 .thenReturn(new PageImpl<>(users.getAssignedLeadDevs()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(leadDevRole), Optional.of(isAssignedToProject))
                 .getUserDtos();
 
         // then
@@ -172,13 +173,13 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnUnassignedDevelopers_whenRoleDeveloperAndIsAssignedFalse() {
         // given
-        String role = UserDto.Role.DEVELOPER;
+        UserDto.Role developerRole = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = false;
         when(userRepository.findUnassignedDevelopers(pageRequest))
                 .thenReturn(new PageImpl<>(users.getUnassignedDevelopers()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(developerRole), Optional.of(isAssignedToProject))
                 .getUserDtos();
 
         // then
@@ -188,13 +189,13 @@ class UserServiceTest {
     @Test
     void getUsers_shouldReturnAssignedDevelopers_whenRoleDeveloperAndIsAssignedTrue() {
         // given
-        String role = UserDto.Role.DEVELOPER;
+        UserDto.Role developerRole = UserDto.Role.DEVELOPER;
         Boolean isAssignedToProject = true;
         when(userRepository.findAssignedDevelopers(pageRequest))
                 .thenReturn(new PageImpl<>(users.getAssignedDevelopers()));
 
         // when
-        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(role), Optional.of(isAssignedToProject))
+        List<UserDto> result = underTest.getUsers(pageRequest, Optional.of(developerRole), Optional.of(isAssignedToProject))
                 .getUserDtos();
 
         // then
@@ -204,9 +205,9 @@ class UserServiceTest {
     @Test
     void getUsers_shouldThrowApiException_whenRoleNotLeadDevOrDeveloperAndIsAssignedNotNull() {
         // given
-        String nullRole = null;
-        String adminRole = User.Role.ADMIN;
-        String managerRole = User.Role.MANAGER;
+        UserDto.Role nullRole = null;
+        UserDto.Role adminRole = UserDto.Role.ADMIN;
+        UserDto.Role managerRole = UserDto.Role.MANAGER;
         Boolean isAssignedToProject = true;
 
         // when, then
@@ -253,7 +254,7 @@ class UserServiceTest {
         // given
         String email = "email@test.com";
         String username = "username";
-        String defaultRole = User.Role.DEVELOPER;
+        User.Role defaultRole = User.Role.DEVELOPER;
         User user = User.builder()
                 .role(defaultRole)
                 .email(email)
@@ -275,7 +276,7 @@ class UserServiceTest {
         assertThat(capturedUser.getEmail()).isEqualTo(email);
         assertThat(capturedUser.getUsername()).isEqualTo(username);
 
-        assertThat(result.getRole()).isEqualTo(defaultRole);
+        assertThat(toEntityRole(result.getRole())).isEqualTo(defaultRole);
         assertThat(result.getEmail()).isEqualTo(email);
         assertThat(result.getUsername()).isEqualTo(username);
     }
@@ -326,12 +327,13 @@ class UserServiceTest {
     void testUpdate_caseSuccess() {
         // given
         long id = 1L;
-        String newRole = User.Role.LEAD_DEV;
+        UserDto.Role newDtoRole = UserDto.Role.LEAD_DEV;
+        User.Role newEntityRole = User.Role.LEAD_DEV;
         String newEmail = "new_email@test.com";
         String newUsername = "new_username";
         User updatedUser = User.builder()
                 .id(id)
-                .role(newRole)
+                .role(newEntityRole)
                 .email(newEmail)
                 .username(newUsername)
                 .build();
@@ -341,7 +343,7 @@ class UserServiceTest {
 
         // when
         UserUpdateReq updateReq = UserUpdateReq.builder()
-                .role(newRole)
+                .role(newDtoRole)
                 .email(newEmail)
                 .username(newUsername)
                 .build();
@@ -352,14 +354,18 @@ class UserServiceTest {
         verify(userRepository).save(userArgCaptor.capture());
         User capturedUser = userArgCaptor.getValue();
         assertThat(capturedUser.getId()).isEqualTo(id);
-        assertThat(capturedUser.getRole()).isEqualTo(newRole);
+        assertThat(capturedUser.getRole()).isEqualTo(newEntityRole);
         assertThat(capturedUser.getEmail()).isEqualTo(newEmail);
         assertThat(capturedUser.getUsername()).isEqualTo(newUsername);
 
         assertThat(result.getId()).isEqualTo(updatedUser.getId());
-        assertThat(result.getRole()).isEqualTo(updatedUser.getRole());
+        assertThat(toEntityRole(result.getRole())).isEqualTo(updatedUser.getRole());
         assertThat(result.getEmail()).isEqualTo(updatedUser.getEmail());
         assertThat(result.getUsername()).isEqualTo(updatedUser.getUsername());
+    }
+
+    private User.Role toEntityRole(UserDto.Role dtoRole) {
+        return UserMapper.INSTANCE.toEntityRole(dtoRole);
     }
 
     @Test

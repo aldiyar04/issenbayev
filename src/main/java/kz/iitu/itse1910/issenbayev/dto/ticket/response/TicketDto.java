@@ -1,5 +1,6 @@
 package kz.iitu.itse1910.issenbayev.dto.ticket.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,9 +23,9 @@ public class TicketDto {
     private final String assigneeUsername;
     private final Long submitterId;
     private final String submitterUsername;
-    private final String type;
-    private final String status;
-    private final String priority;
+    private final Type type;
+    private final Status status;
+    private final Priority priority;
     private final LocalDate targetResolutionDate;
     private final LocalDate actualResolutionDate;
     private final LocalDateTime createdAt;
@@ -43,34 +44,58 @@ public class TicketDto {
         public static final String TYPE = "type";
         public static final String STATUS = "status";
         public static final String PRIORITY = "priority";
-        public static final String TARGET_RES_DATE = "targetResDate";
-        public static final String ACTUAL_RES_DATE = "actualResDate";
+        public static final String TARGET_RES_DATE = "targetResolutionDate";
+        public static final String ACTUAL_RES_DATE = "actualResolutionDate";
         public static final String CREATED_AT = "createdAt";
         public static final String UPDATED_AT = "updatedAt";
     }
 
-    public static class Type {
-        public static final String BUG = "bug";
-        public static final String VULNERABILITY = "vulnerability";
-        public static final String FEATURE_REQUEST = "feature-request";
-        public static final String REFACTORING = "refactoring";
-        public static final String OTHER = "other";
+    public enum Type {
+        BUG("Bug"), VULNERABILITY("Vulnerability"), FEATURE_REQUEST("Feature Request"),
+        REFACTORING("Refactoring"), OTHER("Other");
+
+        private final String type;
+
+        Type(String type) {
+            this.type = type;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return type;
+        }
     }
 
-    public static class Status {
-        public static final String NEW = "new";
-        public static final String ASSIGNED = "assigned";
-        public static final String IN_PROGRESS = "in-progress";
-        public static final String SUBMITTED = "submitted";
-        public static final String EXTRA_WORK_REQUIRED = "extra-work-required";
-        public static final String RESOLVED = "resolved";
+    public enum Status {
+        NEW("New"), ASSIGNED("Assigned"), IN_PROGRESS("In Progress"), SUBMITTED("Submitted"),
+        EXTRA_WORK_REQUIRED("Extra Work Required"), RESOLVED("Resolved");
+
+        private final String status;
+
+        Status(String status) {
+            this.status = status;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return status;
+        }
     }
 
-    public static class Priority {
-        public static final String CRITICAL = "critical";
-        public static final String HIGH = "high";
-        public static final String MEDIUM = "medium";
-        public static final String LOW = "low";
-        public static final String NONE = "none";
+    public enum Priority {
+        CRITICAL("Critical"), HIGH("High"), MEDIUM("Medium"), LOW("Low"), NONE("None");
+        private final String priority;
+
+        Priority(String priority) {
+            this.priority = priority;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return priority;
+        }
     }
 }

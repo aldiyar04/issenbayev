@@ -19,19 +19,19 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 public class User extends BaseEntity {
-    @Column
-    private String role;
+    @Column(name = DatabaseColumn.ROLE)
+    private Role role;
 
-    @Column
+    @Column(name = DatabaseColumn.EMAIL)
     private String email;
 
-    @Column
+    @Column(name = DatabaseColumn.USERNAME)
     private String username;
 
-    @Column
+    @Column(name = DatabaseColumn.PASSWORD)
     private String password;
 
-    @Column(name = "created_on")
+    @Column(name = DatabaseColumn.CREATED_ON)
     private LocalDate createdOn;
 
     @PrePersist
@@ -40,7 +40,7 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(Long id, Long version, String role, String email, String username, String password, LocalDate createdOn) {
+    public User(Long id, Long version, Role role, String email, String username, String password, LocalDate createdOn) {
         super(id, version);
         this.role = role;
         this.email = email;
@@ -49,10 +49,26 @@ public class User extends BaseEntity {
         this.createdOn = createdOn;
     }
 
-    public static class Role {
-        public static final String ADMIN = "Admin";
-        public static final String MANAGER = "Manager";
-        public static final String LEAD_DEV = "Lead Dev";
-        public static final String DEVELOPER = "Developer";
+    public static class DatabaseColumn {
+        public static final String ROLE = "role";
+        public static final String EMAIL = "email";
+        public static final String USERNAME = "username";
+        public static final String PASSWORD = "password";
+        public static final String CREATED_ON = "created_on";
+    }
+
+    public enum Role {
+        ADMIN("Admin"), MANAGER("Manager"), LEAD_DEV("Lead Dev"), DEVELOPER("Developer");
+
+        private final String role;
+
+        Role(String role) {
+            this.role = role;
+        }
+
+        @Override
+        public String toString() {
+            return role;
+        }
     }
 }
