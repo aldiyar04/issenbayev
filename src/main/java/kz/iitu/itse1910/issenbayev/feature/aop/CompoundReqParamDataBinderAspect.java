@@ -3,9 +3,9 @@ package kz.iitu.itse1910.issenbayev.feature.aop;
 import kz.iitu.itse1910.issenbayev.controller.annotation.CompoundRequestParam;
 import kz.iitu.itse1910.issenbayev.dto.RequestParamName;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Aspect
 @Component
 public class CompoundReqParamDataBinderAspect {
-    private final Map<Class<?>, Map<String, String>> MULTICLASS_FIELD_TO_REQ_PARAM_CACHE = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Map<String, String>> MULTICLASS_FIELD_TO_REQ_PARAM_CACHE = new HashMap<>();
+    private final Map<String, Set<Integer>> METHOD_TO_INDICES_OF_COMPOUND_REQ_ARGS_CACHE = new HashMap<>();
     private final ConversionService conversionService;
 
     @Autowired
@@ -38,23 +38,27 @@ public class CompoundReqParamDataBinderAspect {
             "@annotation(kz.iitu.itse1910.issenbayev.controller.annotation.MethodWithCompoundRequestParams)")
     public void isControllerMethodWithCompoundRequestParams() {}
 
-    @Around("isControllerMethodWithCompoundRequestParams()")
-    public Object bindRequestParams(ProceedingJoinPoint pjp) throws Throwable {
-        Method method  = ((MethodSignature) pjp.getSignature()).getMethod();
-        Set<Integer> compoundReqParamIndices = getCompoundRequestParamIndices(method.getParameterAnnotations());
-        Map<Class<?>, Object> compoundReqArgs = getCompoundRequestArguments(method.getParameterTypes(), pjp.getArgs(),
+    @Before("isControllerMethodWithCompoundRequestParams()")
+    public void bindRequestParams(JoinPoint jp) {
+        Method method  = ((MethodSignature) jp.getSignature()).getMethod();
+        Set<Integer> compoundReqParamIndices = getCompoundRequestParamIndices(method);
+        Map<Class<?>, Object> compoundReqArgs = getCompoundRequestArguments(method.getParameterTypes(), jp.getArgs(),
                 compoundReqParamIndices);
-        bindReqArgsToFieldsOfCompoundReqArgs(compoundReqArgs);
-        return pjp.proceed();
+        bindReqParamsToFieldsOfCompoundReqArgs(compoundReqArgs);
     }
 
-    private Set<Integer> getCompoundRequestParamIndices(Annotation[][] paramAnnotations) {
+    private Set<Integer> getCompoundRequestParamIndices(Method method) {
+        if (METHOD_TO_INDICES_OF_COMPOUND_REQ_ARGS_CACHE.containsKey(method.getName())) {
+            return METHOD_TO_INDICES_OF_COMPOUND_REQ_ARGS_CACHE.get(method.getName());
+        }
         Set<Integer> compoundReqParamIndices = new HashSet<>();
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
         for (int i = 0; i < paramAnnotations.length; i++) {
             if (Arrays.stream(paramAnnotations[i]).anyMatch(annotation -> annotation instanceof CompoundRequestParam)) {
                 compoundReqParamIndices.add(i);
             }
         }
+        METHOD_TO_INDICES_OF_COMPOUND_REQ_ARGS_CACHE.put(method.getName(), compoundReqParamIndices);
         return compoundReqParamIndices;
     }
 
@@ -67,7 +71,7 @@ public class CompoundReqParamDataBinderAspect {
         return compoundReqArgs;
     }
 
-    private void bindReqArgsToFieldsOfCompoundReqArgs(Map<Class<?>, Object> compoundReqArgs) {
+    private void bindReqParamsToFieldsOfCompoundReqArgs(Map<Class<?>, Object> compoundReqArgs) {
         for (Class<?> compoundReqParamClass: compoundReqArgs.keySet()) {
             Map<String, String> fieldToReqParamMap = getFieldToRequestParamMap(compoundReqParamClass);
             Object compoundReqArg = compoundReqArgs.get(compoundReqParamClass);
