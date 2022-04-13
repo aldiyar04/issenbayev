@@ -1,11 +1,15 @@
-package kz.iitu.itse1910.issenbayev.dto.ticket.request;
+package kz.iitu.itse1910.issenbayev.controller.compoundrequestparam;
 
 import kz.iitu.itse1910.issenbayev.controller.api.TicketApi;
-import kz.iitu.itse1910.issenbayev.dto.RequestParamName;
+import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.RequestParamName;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@AllArgsConstructor
+@Getter
+@ToString
 public class TicketFilterReq {
     @RequestParamName(TicketApi.Filter.TYPE)
     private TicketDto.Type type;

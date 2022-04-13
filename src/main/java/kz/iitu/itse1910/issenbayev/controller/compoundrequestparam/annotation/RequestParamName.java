@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.dto;
+package kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

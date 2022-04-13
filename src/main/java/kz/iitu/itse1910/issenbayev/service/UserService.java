@@ -35,8 +35,6 @@ public class UserService {
     public UserPaginatedResp getUsers(Pageable pageable,
                                       Optional<UserDto.Role> roleOptional,
                                       Optional<Boolean> isAssignedToProjectOptional) {
-        throwIfInvalidCombinationOfParams(isAssignedToProjectOptional, roleOptional);
-
         Page<User> resultUserPage = null;
 
         if (roleOptional.isEmpty() && isAssignedToProjectOptional.isEmpty()) {
@@ -59,21 +57,6 @@ public class UserService {
             }
         }
         return UserPaginatedResp.fromUserPage(resultUserPage);
-    }
-
-    private void throwIfInvalidCombinationOfParams(Optional<Boolean> isAssignedToProjectOptional,
-                                                   Optional<UserDto.Role> roleOptional) {
-        if (isAssignedToProjectOptional.isPresent() &&
-                (roleOptional.isEmpty() || !isRoleAppropriateWhenIsAssignedToProjectPresent(roleOptional.get()))) {
-            String exMsg = String.format("%s can be used only if %s is specified as '%s' or '%s'",
-                    UserApi.Filter.IS_ASSIGNED_TO_PROJECT, UserApi.Filter.ROLE,
-                    UserApi.Role.LEAD_DEV, UserApi.Role.DEVELOPER);
-            throw new ApiException(exMsg);
-        }
-    }
-
-    private boolean isRoleAppropriateWhenIsAssignedToProjectPresent(UserDto.Role role) {
-        return role.equals(UserDto.Role.LEAD_DEV) || role.equals(UserDto.Role.DEVELOPER);
     }
 
     public UserDto getById(long id) {

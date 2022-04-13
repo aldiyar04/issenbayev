@@ -1,9 +1,8 @@
 package kz.iitu.itse1910.issenbayev.controller;
 
-import kz.iitu.itse1910.issenbayev.controller.annotation.CompoundRequestParam;
-import kz.iitu.itse1910.issenbayev.controller.annotation.MethodWithCompoundRequestParams;
+import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.CompoundRequestParam;
 import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketFilterReq;
+import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.TicketFilterReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketPaginatedResp;
@@ -13,16 +12,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @AllArgsConstructor
 public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping("/projects/{projectId}/tickets")
-    @MethodWithCompoundRequestParams
     public ResponseEntity<TicketPaginatedResp> getTickets(Pageable pageable,
                                                           @PathVariable("projectId") long projectId,
-                                                          @CompoundRequestParam TicketFilterReq filterReq) {
+                                                          @Valid @CompoundRequestParam TicketFilterReq filterReq) {
         System.out.println(filterReq);
         TicketPaginatedResp resp = ticketService.getTickets(pageable, projectId);
         return ResponseEntity.ok(resp);

@@ -1,6 +1,7 @@
 package kz.iitu.itse1910.issenbayev.controller;
 
-import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
+import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.UserFilterReq;
+import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.CompoundRequestParam;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -21,12 +23,10 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserPaginatedResp> getUsers(Pageable pageable,
-                                                  @RequestParam(name = UserApi.Filter.ROLE, required = false)
-                                                          UserDto.Role role,
-                                                  @RequestParam(name = UserApi.Filter.IS_ASSIGNED_TO_PROJECT,
-                                                          required = false) Boolean isAssignedToProject) {
+                                                      @Valid @CompoundRequestParam UserFilterReq filterReq) {
         UserPaginatedResp resp = userService.getUsers(pageable,
-                Optional.ofNullable(role), Optional.ofNullable(isAssignedToProject));
+                Optional.ofNullable(filterReq.getRole()),
+                Optional.ofNullable(filterReq.getIsAssignedToProject()));
         return ResponseEntity.ok(resp);
     }
 
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserSignupReq signupReq) {
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserSignupReq signupReq) {
         UserDto createdUser = userService.register(signupReq);
         return ResponseEntity.ok(createdUser);
     }
