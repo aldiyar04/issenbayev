@@ -4,13 +4,12 @@ import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
-import kz.iitu.itse1910.issenbayev.service.testdata.UserTestData;
+import kz.iitu.itse1910.issenbayev.testdata.UserTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -202,25 +201,27 @@ class UserServiceTest {
         assertThat(result).isEqualTo(userDtos.getAssignedDevelopers());
     }
 
-    @Test
-    void getUsers_shouldThrowApiException_whenRoleNotLeadDevOrDeveloperAndIsAssignedNotNull() {
-        // given
-        UserDto.Role nullRole = null;
-        UserDto.Role adminRole = UserDto.Role.ADMIN;
-        UserDto.Role managerRole = UserDto.Role.MANAGER;
-        Boolean isAssignedToProject = true;
-
-        // when, then
-        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
-                Optional.ofNullable(nullRole), Optional.of(isAssignedToProject)))
-                .isInstanceOf(ApiException.class);
-        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
-                Optional.of(adminRole), Optional.of(isAssignedToProject)))
-                .isInstanceOf(ApiException.class);
-        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
-                Optional.of(managerRole), Optional.of(isAssignedToProject)))
-                .isInstanceOf(ApiException.class);
-    }
+    // Validated in UserFilterReq instead of UserService
+    // TODO: write a similar test for UserController
+//    @Test
+//    void getUsers_shouldThrowApiException_whenRoleNotLeadDevOrDeveloperAndIsAssignedNotNull() {
+//        // given
+//        UserDto.Role nullRole = null;
+//        UserDto.Role adminRole = UserDto.Role.ADMIN;
+//        UserDto.Role managerRole = UserDto.Role.MANAGER;
+//        Boolean isAssignedToProject = true;
+//
+//        // when, then
+//        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
+//                Optional.ofNullable(nullRole), Optional.of(isAssignedToProject)))
+//                .isInstanceOf(ApiException.class);
+//        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
+//                Optional.of(adminRole), Optional.of(isAssignedToProject)))
+//                .isInstanceOf(ApiException.class);
+//        assertThatThrownBy(() -> underTest.getUsers(pageRequest,
+//                Optional.of(managerRole), Optional.of(isAssignedToProject)))
+//                .isInstanceOf(ApiException.class);
+//    }
 
     @Test
     void testGetById_caseSuccess() {

@@ -1,7 +1,7 @@
-package kz.iitu.itse1910.issenbayev.feature.exception;
+package kz.iitu.itse1910.issenbayev.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

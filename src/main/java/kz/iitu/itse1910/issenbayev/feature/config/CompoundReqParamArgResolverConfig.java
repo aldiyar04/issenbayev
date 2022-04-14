@@ -1,6 +1,6 @@
 package kz.iitu.itse1910.issenbayev.feature.config;
 
-import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.support.CompoundRequestParamArgumentResolver;
+import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.argumentresolver.CompoundRequestParamArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;

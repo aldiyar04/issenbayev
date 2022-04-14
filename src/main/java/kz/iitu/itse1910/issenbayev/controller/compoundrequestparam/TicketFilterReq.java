@@ -12,17 +12,17 @@ import lombok.ToString;
 @ToString
 public class TicketFilterReq {
     @RequestParamName(TicketApi.Filter.TYPE)
-    private TicketDto.Type type;
+    private final TicketDto.Type type;
 
     @RequestParamName(TicketApi.Filter.STATUS)
-    private TicketDto.Status status;
+    private final TicketDto.Status status;
 
     @RequestParamName(TicketApi.Filter.PRIORITY)
-    private TicketDto.Priority priority;
+    private final TicketDto.Priority priority;
 
     @RequestParamName(TicketApi.Filter.IS_ASSIGNED)
-    private Boolean isAssigned;
+    private final Boolean isAssigned;
 
     @RequestParamName(TicketApi.Filter.IS_OVERDUE)
-    private Boolean isOverdue;
+    private final Boolean isOverdue;
 }

@@ -1,10 +1,14 @@
-package kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.support;
+package kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.argumentresolver;
 
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.CompoundRequestParam;
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.RequestParamName;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -73,12 +77,31 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
         List<Object> fieldValues = new ArrayList<>();
         Map<String, String> fieldToReqParamMap = getFieldToRequestParamMap(containingClass);
         Map<String, String> reqParamMap = getRequestParams(request);
+
+        List<ApiExceptionDetailHolder> exDetailHolders = new ArrayList<>();
         for (Field field: containingClass.getDeclaredFields()) {
             String reqParamName = fieldToReqParamMap.get(field.getName());
             String fieldValueString = reqParamMap.get(reqParamName);
-            Object fieldValue = conversionService.convert(fieldValueString, field.getType());
-            fieldValues.add(fieldValue);
+            try {
+                Object fieldValue = conversionService.convert(fieldValueString, field.getType());
+                fieldValues.add(fieldValue);
+            } catch (ConversionFailedException conversionEx) {
+                Throwable rootEx = ExceptionUtils.getRootCause(conversionEx);
+                if (rootEx instanceof ApiException) {
+                    ApiException apiEx = (ApiException) rootEx;
+                    exDetailHolders.addAll(apiEx.getDetailHolders());
+                } else {
+                    ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
+                            .message(rootEx.getLocalizedMessage())
+                            .build();
+                    exDetailHolders.add(exDetailHolder);
+                }
+            }
         }
+        if (!exDetailHolders.isEmpty()) {
+            throw new ApiException(exDetailHolders);
+        }
+
         return fieldValues.toArray();
     }
 
@@ -100,6 +123,7 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
     private Map<String, String> getRequestParams(NativeWebRequest webRequest) {
         Map<String, String[]> requestParams = webRequest.getParameterMap();
         return requestParams.entrySet().stream()
+                .filter(entry -> entry.getValue()[0] != null)
                 .map(entry -> Map.entry(entry.getKey(), entry.getValue()[0]))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

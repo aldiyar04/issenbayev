@@ -1,8 +1,9 @@
-package kz.iitu.itse1910.issenbayev.feature.exception;
+package kz.iitu.itse1910.issenbayev.controller.exceptionhandler;
 
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.dto.ErrorResponse;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.RequestParamMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;

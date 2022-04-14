@@ -1,15 +1,13 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserPaginatedResp;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.ApiExceptionDetailHolder;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.exception.apiexception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;

@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.service.testdata;
+package kz.iitu.itse1910.issenbayev.testdata;
 
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.entity.User;

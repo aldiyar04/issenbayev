@@ -2,7 +2,6 @@ package kz.iitu.itse1910.issenbayev.feature.mapper;
 
 import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectCreationReq;
 import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
-import kz.iitu.itse1910.issenbayev.entity.BaseEntity_;
 import kz.iitu.itse1910.issenbayev.entity.Project;
 import kz.iitu.itse1910.issenbayev.entity.Project_;
 import kz.iitu.itse1910.issenbayev.entity.User_;

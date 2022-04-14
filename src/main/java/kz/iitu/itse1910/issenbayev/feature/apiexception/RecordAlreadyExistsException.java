@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.feature.exception.apiexception;
+package kz.iitu.itse1910.issenbayev.feature.apiexception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
