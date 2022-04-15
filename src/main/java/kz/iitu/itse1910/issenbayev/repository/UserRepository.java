@@ -21,7 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<User> findAll(@NonNull Specification<User> specification, @NonNull Pageable pageable);
 
-    // TODO: use metamodel field instead of hardcoded role "Lead Dev":
     @Query("select u from User u where u.role = 'Lead Dev' and " +
             "(select count(p) from Project p where p.leadDev = u) = 0")
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))

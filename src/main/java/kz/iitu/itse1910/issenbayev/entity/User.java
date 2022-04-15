@@ -49,6 +49,14 @@ public class User extends BaseEntity {
         this.createdOn = createdOn;
     }
 
+    public static class Field {
+        public static final String ROLE = "role";
+        public static final String EMAIL = "email";
+        public static final String USERNAME = "username";
+        public static final String PASSWORD = "password";
+        public static final String CREATED_ON = "createdOn";
+    }
+
     public static class DatabaseColumn {
         public static final String ROLE = "role";
         public static final String EMAIL = "email";

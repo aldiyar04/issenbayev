@@ -17,7 +17,6 @@
 		<java.version>11</java.version>
 		<org.projectlombok.version>1.18.22</org.projectlombok.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
-		<org.hibernate.orm.hibernate-jpamodelgen.version>5.6.7.Final</org.hibernate.orm.hibernate-jpamodelgen.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -35,11 +34,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-activemq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-jpamodelgen</artifactId>
-			<version>${org.hibernate.orm.hibernate-jpamodelgen.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
@@ -123,11 +117,6 @@
 							<groupId>org.mapstruct</groupId>
 							<artifactId>mapstruct-processor</artifactId>
 							<version>${org.mapstruct.version}</version>
-						</path>
-						<path>
-							<groupId>org.hibernate</groupId>
-							<artifactId>hibernate-jpamodelgen</artifactId>
-							<version>${org.hibernate.orm.hibernate-jpamodelgen.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

@@ -2,7 +2,6 @@ package kz.iitu.itse1910.issenbayev.testdata;
 
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.entity.User_;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -142,22 +141,22 @@ public class UserTestData {
 
     public static class RoleSpecification {
         public Specification<User> getForAdmin() {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User.Field.ROLE),
                     User.Role.ADMIN);
         }
 
         public Specification<User> getForManager() {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User.Field.ROLE),
                     User.Role.MANAGER);
         }
 
         public Specification<User> getForLeadDev() {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User.Field.ROLE),
                     User.Role.LEAD_DEV);
         }
 
         public Specification<User> getForDeveloper() {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.ROLE),
+            return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User.Field.ROLE),
                     User.Role.DEVELOPER);
         }
     }

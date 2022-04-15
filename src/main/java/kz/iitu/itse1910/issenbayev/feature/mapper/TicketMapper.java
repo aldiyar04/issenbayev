@@ -11,12 +11,12 @@ import org.mapstruct.factory.Mappers;
 public interface TicketMapper {
     TicketMapper INSTANCE = Mappers.getMapper(TicketMapper.class);
 
-    @Mapping(target = TicketDto.Field.PROJECT_ID, source = Ticket_.PROJECT + "." + Project_.ID)
-    @Mapping(target = TicketDto.Field.PROJECT_NAME, source = Ticket_.PROJECT + "." + Project_.NAME)
-    @Mapping(target = TicketDto.Field.ASSIGNEE_ID, source = Ticket_.ASSIGNEE + "." + User_.ID)
-    @Mapping(target = TicketDto.Field.ASSIGNEE_USERNAME, source = Ticket_.ASSIGNEE + "." + User_.USERNAME)
-    @Mapping(target = TicketDto.Field.SUBMITTER_ID, source = Ticket_.SUBMITTER + "." + User_.ID)
-    @Mapping(target = TicketDto.Field.SUBMITTER_USERNAME, source = Ticket_.SUBMITTER + "." + User_.USERNAME)
+    @Mapping(target = TicketDto.Field.PROJECT_ID, source = Ticket.Field.PROJECT + "." + BaseEntity.Field.ID)
+    @Mapping(target = TicketDto.Field.PROJECT_NAME, source = Ticket.Field.PROJECT + "." + Project.Field.NAME)
+    @Mapping(target = TicketDto.Field.ASSIGNEE_ID, source = Ticket.Field.ASSIGNEE + "." + BaseEntity.Field.ID)
+    @Mapping(target = TicketDto.Field.ASSIGNEE_USERNAME, source = Ticket.Field.ASSIGNEE + "." + User.Field.USERNAME)
+    @Mapping(target = TicketDto.Field.SUBMITTER_ID, source = Ticket.Field.SUBMITTER + "." + BaseEntity.Field.ID)
+    @Mapping(target = TicketDto.Field.SUBMITTER_USERNAME, source = Ticket.Field.SUBMITTER + "." + User.Field.USERNAME)
     TicketDto entityToDto(Ticket ticket);
 
     Ticket creationReqToEntity(TicketCreationReq creationReq);

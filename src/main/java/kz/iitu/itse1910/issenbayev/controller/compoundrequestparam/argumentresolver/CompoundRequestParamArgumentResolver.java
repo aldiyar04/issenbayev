@@ -87,15 +87,7 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
                 fieldValues.add(fieldValue);
             } catch (ConversionFailedException conversionEx) {
                 Throwable rootEx = ExceptionUtils.getRootCause(conversionEx);
-                if (rootEx instanceof ApiException) {
-                    ApiException apiEx = (ApiException) rootEx;
-                    exDetailHolders.addAll(apiEx.getDetailHolders());
-                } else {
-                    ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                            .message(rootEx.getLocalizedMessage())
-                            .build();
-                    exDetailHolders.add(exDetailHolder);
-                }
+                exDetailHolders.addAll(apiExceptionDetailHolderListFromException(rootEx));
             }
         }
         if (!exDetailHolders.isEmpty()) {
@@ -128,6 +120,21 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
+    private List<ApiExceptionDetailHolder> apiExceptionDetailHolderListFromException(Throwable exception) {
+        List<ApiExceptionDetailHolder> exDetailHolders = new ArrayList<>();
+        if (exception instanceof ApiException) {
+            ApiException apiEx = (ApiException) exception;
+            exDetailHolders.addAll(apiEx.getDetailHolders());
+        } else {
+            ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
+                    // TODO: add request param name to exDetailHolder
+                    .message(exception.getLocalizedMessage())
+                    .build();
+            exDetailHolders.add(exDetailHolder);
+        }
+        return exDetailHolders;
+    }
+
     private Object newInstance(Constructor<?> constructor, Object[] fieldValues) {
         try {
             return constructor.newInstance(fieldValues);
@@ -144,12 +151,12 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
         }
     }
 
-    private void validateIfNecessary(Object obj, MethodParameter parameter) throws MethodArgumentNotValidException {
+    private void validateIfNecessary(Object arg, MethodParameter parameter) throws MethodArgumentNotValidException {
         if (!parameter.hasParameterAnnotation(Valid.class)) {
             return;
         }
-        BindingResult bindingResult = new BeanPropertyBindingResult(obj, parameter.getParameterType().getSimpleName());
-        validator.validate(obj, bindingResult);
+        BindingResult bindingResult = new BeanPropertyBindingResult(arg, parameter.getParameterType().getSimpleName());
+        validator.validate(arg, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new MethodArgumentNotValidException(parameter, bindingResult);
         }

@@ -1,7 +1,9 @@
-package kz.iitu.itse1910.issenbayev.controller;
+package integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kz.iitu.itse1910.issenbayev.IssenbayevApplication;
+import kz.iitu.itse1910.issenbayev.controller.UserController;
 import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.argumentresolver.CompoundRequestParamArgumentResolver;
 import kz.iitu.itse1910.issenbayev.controller.exceptionhandler.CustomExceptionHandler;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
+@ContextConfiguration(classes = {IssenbayevApplication.class})
 class UserControllerTest {
     @MockBean
     UserService userService;

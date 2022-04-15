@@ -108,6 +108,21 @@ public class Ticket extends BaseEntity {
                 '}';
     }
 
+    public static class Field {
+        public static final String TITLE = "title";
+        public static final String DESCRIPTION = "description";
+        public static final String PROJECT = "project";
+        public static final String ASSIGNEE = "assignee";
+        public static final String SUBMITTER = "submitter";
+        public static final String TYPE = "type";
+        public static final String STATUS = "status";
+        public static final String PRIORITY = "priority";
+        public static final String TARGET_RESOLUTION_DATE = "targetResolutionDate";
+        public static final String ACTUAL_RESOLUTION_DATE = "actualResolutionDate";
+        public static final String CREATED_AT = "createdAt";
+        public static final String UPDATED_AT = "updatedAt";
+    }
+
     public static class DatabaseColumn {
         public static final String TITLE = "title";
         public static final String DESCRIPTION = "description";
