@@ -1,8 +1,8 @@
 package kz.iitu.itse1910.issenbayev.testdata;
 
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
-import kz.iitu.itse1910.issenbayev.entity.Ticket;
-import kz.iitu.itse1910.issenbayev.feature.mapper.TicketMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.Ticket;
+import kz.iitu.itse1910.issenbayev.service.mapper.TicketMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 

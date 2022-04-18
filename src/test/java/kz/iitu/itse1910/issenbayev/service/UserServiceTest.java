@@ -1,12 +1,12 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
-import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
-import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
-import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.user.request.UserSignupReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.user.request.UserUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.user.response.UserDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.User;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.service.mapper.UserMapper;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import kz.iitu.itse1910.issenbayev.testdata.UserTestData;

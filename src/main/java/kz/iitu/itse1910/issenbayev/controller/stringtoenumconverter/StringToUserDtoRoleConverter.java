@@ -1,9 +1,9 @@
 package kz.iitu.itse1910.issenbayev.controller.stringtoenumconverter;
 
 import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
-import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.controller.dto.user.response.UserDto;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

@@ -1,14 +1,14 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectPaginatedResp;
-import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
-import kz.iitu.itse1910.issenbayev.feature.mapper.ProjectMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.request.ProjectCreationReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.request.ProjectUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectPaginatedResp;
+import kz.iitu.itse1910.issenbayev.repository.entity.Project;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.service.mapper.ProjectMapper;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

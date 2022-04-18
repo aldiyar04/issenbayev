@@ -1,8 +1,8 @@
 package kz.iitu.itse1910.issenbayev.testdata;
 
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
-import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.feature.mapper.ProjectMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.Project;
+import kz.iitu.itse1910.issenbayev.service.mapper.ProjectMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 

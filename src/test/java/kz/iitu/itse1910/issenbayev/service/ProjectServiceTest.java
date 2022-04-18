@@ -1,11 +1,11 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
-import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.request.ProjectCreationReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.request.ProjectUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.Project;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import kz.iitu.itse1910.issenbayev.testdata.ProjectTestData;
 import org.junit.jupiter.api.BeforeEach;

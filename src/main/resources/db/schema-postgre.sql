@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS tickets;
 DROP TABLE IF EXISTS project_assignees;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS project_performances;
 
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY NOT NULL,
@@ -45,4 +46,15 @@ CREATE TABLE tickets (
     actual_res_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE project_performances (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    version BIGINT DEFAULT 1 NOT NULL,
+    name VARCHAR(60) UNIQUE NOT NULL,
+    num_assignees INT NOT NULL,
+    mean_num_assignees BIGINT NOT NULL,
+    mean_num_assignees_updated_at TIMESTAMP NOT NULL,
+    tickets_performance BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  NOT NULL
 );

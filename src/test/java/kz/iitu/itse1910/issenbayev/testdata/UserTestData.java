@@ -1,8 +1,8 @@
 package kz.iitu.itse1910.issenbayev.testdata;
 
-import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
-import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.user.response.UserDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.User;
+import kz.iitu.itse1910.issenbayev.service.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.Specification;

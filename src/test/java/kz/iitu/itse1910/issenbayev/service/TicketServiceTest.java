@@ -1,14 +1,14 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
-import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.entity.Ticket;
-import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
-import kz.iitu.itse1910.issenbayev.feature.mapper.TicketMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.request.TicketCreationReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.request.TicketUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.Project;
+import kz.iitu.itse1910.issenbayev.repository.entity.Ticket;
+import kz.iitu.itse1910.issenbayev.repository.entity.User;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.service.mapper.TicketMapper;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;

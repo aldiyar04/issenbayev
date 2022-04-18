@@ -1,7 +1,7 @@
 package kz.iitu.itse1910.issenbayev.controller.stringtoenumconverter;
 
 import kz.iitu.itse1910.issenbayev.controller.api.TicketApi;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketDto;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

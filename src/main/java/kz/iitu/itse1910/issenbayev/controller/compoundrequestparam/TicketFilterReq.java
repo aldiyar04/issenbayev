@@ -2,7 +2,7 @@ package kz.iitu.itse1910.issenbayev.controller.compoundrequestparam;
 
 import kz.iitu.itse1910.issenbayev.controller.api.TicketApi;
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.RequestParamName;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

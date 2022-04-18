@@ -2,8 +2,8 @@ package kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.argumentreso
 
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.CompoundRequestParam;
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.RequestParamName;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,7 +140,7 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
             return constructor.newInstance(fieldValues);
         } catch (InstantiationException e) {
             throw new IllegalStateException(constructor.getDeclaringClass().getName() +
-                    " must not be abstract, but it is", e);
+                    " must not be abstract", e);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(constructor.getDeclaringClass().getName() +
                     " must have a public all args constructor", e);

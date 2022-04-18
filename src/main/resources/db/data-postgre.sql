@@ -22,15 +22,16 @@ INSERT INTO projects (name, description, lead_dev_id) VALUES
         6);
 
 INSERT INTO project_assignees (project_id, assignee_id) VALUES
+    (1, 7),
     (1, 8),
-    (1, 9),
-    (2, 10);
+    (2, 9),
+    (3, 10);
 
 
-INSERT INTO tickets (title, project_id, submitter_id, type, status, priority, target_res_date) VALUES
-    ('Issue 1', 1, 2, 'Bug', 'New', 'High', '2022-03-12'),
-    ('Issue 2', 1, 2, 'Refactoring', 'New', 'Medium', '2022-03-15'),
-    ('Issue 3', 2, 2, 'Vulnerability', 'New', 'Critical', '2022-03-11'),
-    ('Issue 4', 2, 3, 'Feature Request', 'New', 'High', '2022-03-30'),
-    ('Issue 5', 3, 3, 'Bug', 'New', 'High', '2022-03-13'),
-    ('Issue 6', 3, 3, 'Bug', 'New', 'Medium', '2022-03-20');
+INSERT INTO tickets (title, project_id, assignee_id, submitter_id, type, status, priority, target_res_date) VALUES
+    ('Issue 1', 1, 7, 2, 'Bug', 'New', 'High', '2022-04-20'),
+    ('Issue 2', 1, 8, 2, 'Refactoring', 'New', 'Medium', '2022-04-15'),
+    ('Issue 3', 2, 9, 2, 'Vulnerability', 'New', 'Critical', '2022-04-11'),
+    ('Issue 4', 2, 9, 3, 'Feature Request', 'New', 'High', '2022-04-30'),
+    ('Issue 5', 3, 10, 3, 'Bug', 'New', 'High', '2022-03-13'),
+    ('Issue 6', 3, 10, 3, 'Bug', 'New', 'Medium', '2022-04-10');

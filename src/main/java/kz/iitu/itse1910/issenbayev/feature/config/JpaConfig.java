@@ -61,7 +61,7 @@ public class JpaConfig {
         factoryBean.setDataSource(dataSource());
         factoryBean.setJpaProperties(hibernateProperties());
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
-        factoryBean.setPackagesToScan("kz.iitu.itse1910.issenbayev.entity");
+        factoryBean.setPackagesToScan("kz.iitu.itse1910.issenbayev.repository.entity");
         factoryBean.setJpaDialect(isolationSupportJpaDialect());
         factoryBean.afterPropertiesSet();
         return factoryBean.getNativeEntityManagerFactory();

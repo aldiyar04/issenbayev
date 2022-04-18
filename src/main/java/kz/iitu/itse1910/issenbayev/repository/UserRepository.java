@@ -1,6 +1,6 @@
 package kz.iitu.itse1910.issenbayev.repository;
 
-import kz.iitu.itse1910.issenbayev.entity.User;
+import kz.iitu.itse1910.issenbayev.repository.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

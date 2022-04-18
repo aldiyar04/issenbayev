@@ -2,10 +2,10 @@ package kz.iitu.itse1910.issenbayev.controller;
 
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.TicketFilterReq;
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.CompoundRequestParam;
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketPaginatedResp;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.request.TicketCreationReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.request.TicketUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketPaginatedResp;
 import kz.iitu.itse1910.issenbayev.service.TicketService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;

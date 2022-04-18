@@ -1,9 +1,9 @@
 package kz.iitu.itse1910.issenbayev.controller.exceptionhandler;
 
-import kz.iitu.itse1910.issenbayev.dto.ErrorResponse;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.controller.dto.ErrorResponse;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordAlreadyExistsException;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

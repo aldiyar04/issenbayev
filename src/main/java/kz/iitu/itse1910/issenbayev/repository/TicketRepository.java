@@ -1,6 +1,6 @@
 package kz.iitu.itse1910.issenbayev.repository;
 
-import kz.iitu.itse1910.issenbayev.entity.Ticket;
+import kz.iitu.itse1910.issenbayev.repository.entity.Ticket;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +10,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.QueryHint;
-import java.util.List;
 import java.util.Optional;
 
 @Repository

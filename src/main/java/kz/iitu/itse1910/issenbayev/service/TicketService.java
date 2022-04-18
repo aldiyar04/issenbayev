@@ -1,24 +1,27 @@
 package kz.iitu.itse1910.issenbayev.service;
 
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
-import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketPaginatedResp;
-import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
-import kz.iitu.itse1910.issenbayev.entity.Project;
-import kz.iitu.itse1910.issenbayev.entity.Ticket;
-import kz.iitu.itse1910.issenbayev.entity.User;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
-import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
-import kz.iitu.itse1910.issenbayev.feature.mapper.TicketMapper;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.request.TicketCreationReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.request.TicketUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.ticket.response.TicketPaginatedResp;
+import kz.iitu.itse1910.issenbayev.controller.dto.user.response.UserDto;
+import kz.iitu.itse1910.issenbayev.kafka.KafkaConfig;
+import kz.iitu.itse1910.issenbayev.kafka.eventdto.TicketResolvedDto;
+import kz.iitu.itse1910.issenbayev.repository.entity.Project;
+import kz.iitu.itse1910.issenbayev.repository.entity.Ticket;
+import kz.iitu.itse1910.issenbayev.repository.entity.User;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.exception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.exception.RecordNotFoundException;
+import kz.iitu.itse1910.issenbayev.service.mapper.TicketMapper;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
 import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -30,6 +33,8 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+
+    private final KafkaTemplate<String, TicketResolvedDto> kafkaTemplate;
 
     @Transactional(readOnly = true)
     public TicketPaginatedResp getTickets(Pageable pageable, long projectId) {
@@ -93,7 +98,18 @@ public class TicketService {
         }
 
         Ticket updatedTicket = ticketRepository.save(ticket);
+
+        // KAFKA
+        sendToKafkaIfResolved(updatedTicket);
+
         return toDto(updatedTicket);
+    }
+
+    private void sendToKafkaIfResolved(Ticket ticket) {
+        if (ticket.getStatus() == Ticket.Status.RESOLVED) {
+            TicketResolvedDto ticketResolvedDto = TicketMapper.INSTANCE.entityToResolvedTicketDto(ticket);
+            kafkaTemplate.send(KafkaConfig.TopicNames.RESOLVED_TICKETS, ticketResolvedDto);
+        }
     }
 
     public void delete(long projectId, long id) {

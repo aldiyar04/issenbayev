@@ -1,9 +1,9 @@
 package kz.iitu.itse1910.issenbayev.controller;
 
-import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectCreationReq;
-import kz.iitu.itse1910.issenbayev.dto.project.request.ProjectUpdateReq;
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectDto;
-import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectPaginatedResp;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.request.ProjectCreationReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.request.ProjectUpdateReq;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectDto;
+import kz.iitu.itse1910.issenbayev.controller.dto.project.response.ProjectPaginatedResp;
 import kz.iitu.itse1910.issenbayev.service.ProjectService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
