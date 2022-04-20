@@ -10,11 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-public class CompoundReqParamArgResolverConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
     private final ApplicationContext context;
 
     @Autowired
-    public CompoundReqParamArgResolverConfig(ApplicationContext context) {
+    public WebMvcConfig(ApplicationContext context) {
         this.context = context;
     }
 
