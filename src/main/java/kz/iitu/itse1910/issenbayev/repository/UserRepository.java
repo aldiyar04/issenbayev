@@ -12,6 +12,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.QueryHint;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
@@ -20,6 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Page<User> findAll(@NonNull Specification<User> specification, @NonNull Pageable pageable);
+
+    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    Optional<User> findByUsername(String username);
 
     @Query("select u from User u where u.role = 'Lead Dev' and " +
             "(select count(p) from Project p where p.leadDev = u) = 0")

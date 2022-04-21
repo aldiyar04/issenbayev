@@ -1,14 +1,14 @@
 INSERT INTO users (role, email, username, password) VALUES
-    ('Admin', 'admin@test.com', 'Admin', 'password'),
-    ('Manager', 'manager1@test.com', 'Manager1', 'password'),
-    ('Manager', 'manager2@test.com', 'Manager2', 'password'),
-    ('Lead Dev', 'allaissen@gmail.com', 'LeadDev1', 'password'),
-    ('Lead Dev', 'leaddev2@test.com', 'LeadDev2', 'password'),
-    ('Lead Dev', 'leaddev3@test.com', 'LeadDev3', 'password'),
-    ('Developer', 'developer1@test.com', 'Developer1', 'password'),
-    ('Developer', 'developer2@test.com', 'Developer2', 'password'),
-    ('Developer', 'developer3@test.com', 'Developer3', 'password'),
-    ('Developer', 'developer4@test.com', 'Developer4', 'password');
+    ('Admin', 'admin@test.com', 'Admin', '$2a$10$KhJM993ZyhJxRZfztJtUzeUbPGK5BV3nCl0ZqWe5AM59uKUV1bVBC'),
+    ('Manager', 'manager1@test.com', 'Manager1', '$2a$10$UydTYhiLdYLFuhvXf0N1c.k.ZdU377P73BShFBZ5kJOIlEyjN89aW'),
+    ('Manager', 'manager2@test.com', 'Manager2', '$2a$10$syRFOkGJ.FE6p3Ixb8PU0OnfInv5HLPPWToG95hfSgPBBRpbSd09m'),
+    ('Lead Dev', 'allaissen@gmail.com', 'LeadDev1', '$2a$10$htB.IBFHV2dC7pBh1mbdDeDZD4503OBl5RUNasXfjVJmipUjS7PwS'),
+    ('Lead Dev', 'leaddev2@test.com', 'LeadDev2', '$2a$10$QW/.id/RT7CyT8XDf7zVJO7Ixyqw95GnRf6twGV3qyhdTV5CgntoC'),
+    ('Lead Dev', 'leaddev3@test.com', 'LeadDev3', '$2a$10$qcxagl/i3vF4QUP5XvuKyOp4o2ZIsuP29eCNAVYhffsPXeLlBOBy2'),
+    ('Developer', 'developer1@test.com', 'Developer1', '$2a$10$b/NltOjVgtBiIvjkB3lxUu/fuCN7K4Ofww.6f14e3E8103E6G9nRO'),
+    ('Developer', 'developer2@test.com', 'Developer2', '$2a$10$66e5kgsU4evTqWpJFPENm.pUmDf2BmayBPCZjscA3rQ6825DJ/L5u'),
+    ('Developer', 'developer3@test.com', 'Developer3', '$2a$10$9mT1oTz7c7NMuu3J0fcgI.ltuFV5jHAndcVKE1A3SX3PQ2lTGvB7C'),
+    ('Developer', 'developer4@test.com', 'Developer4', '$2a$10$b5KQGgDINNr7L6.v0N3NBeGMpGGC.eJP3u54Hk7g78oATwMlxEeym');
 
 INSERT INTO projects (name, description, lead_dev_id) VALUES
     ('Text Editor',

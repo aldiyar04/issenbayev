@@ -9,7 +9,7 @@ CREATE TABLE users (
     role VARCHAR(10) CHECK (role IN ('Admin', 'Manager', 'Lead Dev', 'Developer')) NOT NULL,
     email VARCHAR(60) UNIQUE NOT NULL,
     username VARCHAR(30) UNIQUE NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    password CHAR(60) NOT NULL,
     created_on DATE DEFAULT CURRENT_DATE NOT NULL
 );
 
