@@ -11,7 +11,7 @@ import lombok.ToString;
 public class TicketUpdateReq {
     private final String title;
     private final String description;
-    private final Long assigneeId;
+    private final String assignee;
     private final TicketDto.Type type;
     private final TicketDto.Status status;
     private final TicketDto.Priority priority;

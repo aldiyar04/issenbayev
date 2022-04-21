@@ -3,23 +3,12 @@ DROP TABLE IF EXISTS project_assignees;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS users;
 
-CREATE TABLE users (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    version BIGINT DEFAULT 1 NOT NULL,
-    role VARCHAR(10) NOT NULL,
-    email VARCHAR(60) UNIQUE NOT NULL,
-    username VARCHAR(30) UNIQUE NOT NULL,
-    password CHAR(60) NOT NULL,
-    created_on DATE DEFAULT CURRENT_DATE NOT NULL,
-    CHECK (role IN ('Admin', 'Manager', 'Lead Dev', 'Developer'))
-);
-
 CREATE TABLE projects (
     id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     version BIGINT DEFAULT 1 NOT NULL,
     name VARCHAR(60) UNIQUE NOT NULL,
     description TEXT NOT NULL,
-    lead_dev_id BIGINT REFERENCES users(id),
+    lead_dev VARCHAR(30),
     created_on DATE DEFAULT CURRENT_DATE NOT NULL,
     updated_on DATE DEFAULT CURRENT_DATE NOT NULL
 );
@@ -28,7 +17,7 @@ CREATE TABLE project_assignees (
     id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     version BIGINT DEFAULT 1 NOT NULL,
     project_id BIGINT NOT NULL REFERENCES projects(id),
-    assignee_id BIGINT NOT NULL REFERENCES users(id)
+    assignee VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE tickets (
@@ -37,8 +26,8 @@ CREATE TABLE tickets (
     title VARCHAR(40) NOT NULL,
     description TEXT,
     project_id BIGINT NOT NULL REFERENCES projects(id),
-    assignee_id BIGINT REFERENCES users(id),
-    submitter_id BIGINT REFERENCES users(id),
+    assignee VARCHAR(30),
+    submitter VARCHAR(30),
     type VARCHAR(30) NOT NULL,
     status VARCHAR(30) NOT NULL,
     priority VARCHAR(30) NOT NULL,

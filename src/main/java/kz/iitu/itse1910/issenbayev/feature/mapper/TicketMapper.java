@@ -13,10 +13,8 @@ public interface TicketMapper {
 
     @Mapping(target = TicketDto.Field.PROJECT_ID, source = Ticket.Field.PROJECT + "." + BaseEntity.Field.ID)
     @Mapping(target = TicketDto.Field.PROJECT_NAME, source = Ticket.Field.PROJECT + "." + Project.Field.NAME)
-    @Mapping(target = TicketDto.Field.ASSIGNEE_ID, source = Ticket.Field.ASSIGNEE + "." + BaseEntity.Field.ID)
-    @Mapping(target = TicketDto.Field.ASSIGNEE_USERNAME, source = Ticket.Field.ASSIGNEE + "." + User.Field.USERNAME)
-    @Mapping(target = TicketDto.Field.SUBMITTER_ID, source = Ticket.Field.SUBMITTER + "." + BaseEntity.Field.ID)
-    @Mapping(target = TicketDto.Field.SUBMITTER_USERNAME, source = Ticket.Field.SUBMITTER + "." + User.Field.USERNAME)
+    @Mapping(target = TicketDto.Field.ASSIGNEE, source = Ticket.Field.ASSIGNEE)
+    @Mapping(target = TicketDto.Field.SUBMITTER, source = Ticket.Field.SUBMITTER)
     TicketDto entityToDto(Ticket ticket);
 
     Ticket creationReqToEntity(TicketCreationReq creationReq);

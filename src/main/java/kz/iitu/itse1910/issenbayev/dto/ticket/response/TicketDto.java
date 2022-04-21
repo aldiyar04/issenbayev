@@ -19,10 +19,8 @@ public class TicketDto {
     private final String description;
     private final Long projectId;
     private final String projectName;
-    private final Long assigneeId;
-    private final String assigneeUsername;
-    private final Long submitterId;
-    private final String submitterUsername;
+    private final String assignee;
+    private final String submitter;
     private final Type type;
     private final Status status;
     private final Priority priority;
@@ -37,10 +35,8 @@ public class TicketDto {
         public static final String DESCRIPTION = "description";
         public static final String PROJECT_ID = "projectId";
         public static final String PROJECT_NAME = "projectName";
-        public static final String ASSIGNEE_ID = "assigneeId";
-        public static final String ASSIGNEE_USERNAME = "assigneeUsername";
-        public static final String SUBMITTER_ID = "submitterId";
-        public static final String SUBMITTER_USERNAME = "submitterUsername";
+        public static final String ASSIGNEE = "assignee";
+        public static final String SUBMITTER = "submitter";
         public static final String TYPE = "type";
         public static final String STATUS = "status";
         public static final String PRIORITY = "priority";

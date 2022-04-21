@@ -29,13 +29,11 @@ public class Ticket extends BaseEntity {
     @JoinColumn(name = DatabaseColumn.PROJECT_ID)
     private Project project;
 
-    @ManyToOne
-    @JoinColumn(name = DatabaseColumn.ASSIGNEE_ID)
-    private User assignee;
+    @Column(name = "assignee")
+    private String assignee;
 
-    @ManyToOne
-    @JoinColumn(name = DatabaseColumn.SUBMITTER_ID)
-    private User submitter;
+    @Column(name = "submitter")
+    private String submitter;
 
     @Column(name = DatabaseColumn.TYPE)
     private Type type;
@@ -70,7 +68,7 @@ public class Ticket extends BaseEntity {
 
     @Builder
     public Ticket(Long id, Long version, String title, String description, Project project,
-                  User assignee, User submitter, Type type, Status status, Priority priority,
+                  String assignee, String submitter, Type type, Status status, Priority priority,
                   LocalDate targetResolutionDate, LocalDate actualResolutionDate,
                   LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id, version);
@@ -96,8 +94,8 @@ public class Ticket extends BaseEntity {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", projectId=" + project.getId() +
-                ", assigneeId=" + (assignee == null ? "null" : "" + assignee.getId()) +
-                ", submitterId=" + (submitter == null ? "=null" : "" + submitter.getId()) +
+                ", assignee='" + assignee + '\'' +
+                ", submitter='" + submitter + '\'' +
                 ", type='" + type + '\'' +
                 ", status='" + status + '\'' +
                 ", priority='" + priority + '\'' +
