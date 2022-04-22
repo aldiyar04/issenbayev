@@ -198,21 +198,7 @@ class TicketServiceTest {
         }).isInstanceOf(RecordNotFoundException.class);
     }
 
-    @Test
-    void testCreate_caseSubmitterNotFound() {
-        // given
-        long projectId = 1L;
-        String submitter = "Manager1";
-        when(projectRepository.findById(projectId)).thenReturn(Optional.of(projects.getProject1()));
 
-        // when, then
-        TicketCreationReq creationReq = TicketCreationReq.builder()
-                .submitter(submitter)
-                .build();
-        assertThatThrownBy(() -> {
-            underTest.create(projectId, creationReq);
-        }).isInstanceOf(RecordNotFoundException.class);
-    }
 
     @Test
     void testUpdate_caseSuccessful() {
@@ -300,42 +286,6 @@ class TicketServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             underTest.update(projectId, id, any());
-        }).isInstanceOf(ApiException.class);
-    }
-
-    @Test
-    void testUpdate_caseAssigneeNotFound() {
-        // given
-        long projectId = 1L;
-        long id = 1L;
-        String assignee = "NonExistingDeveloper";
-        when(projectRepository.findById(projectId)).thenReturn(Optional.of(projects.getProject1()));
-        when(ticketRepository.findById(id)).thenReturn(Optional.of(tickets.getTicket1()));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            TicketUpdateReq updateReq = TicketUpdateReq.builder()
-                    .assignee(assignee)
-                    .build();
-            underTest.update(projectId, id, updateReq);
-        }).isInstanceOf(RecordNotFoundException.class);
-    }
-
-    @Test
-    void update_shouldThrowApiException_whenAssigneeRoleManager() {
-        // given
-        long projectId = 1L;
-        long id = 1L;
-        String assignee = "Manager1";
-        when(projectRepository.findById(projectId)).thenReturn(Optional.of(projects.getProject1()));
-        when(ticketRepository.findById(id)).thenReturn(Optional.of(tickets.getTicket1()));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            TicketUpdateReq updateReq = TicketUpdateReq.builder()
-                    .assignee(assignee)
-                    .build();
-            underTest.update(projectId, id, updateReq);
         }).isInstanceOf(ApiException.class);
     }
 
