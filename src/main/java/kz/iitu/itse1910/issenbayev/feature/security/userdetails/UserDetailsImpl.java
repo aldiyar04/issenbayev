@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.feature.security;
+package kz.iitu.itse1910.issenbayev.feature.security.userdetails;
 
 import kz.iitu.itse1910.issenbayev.entity.User;
 import lombok.AllArgsConstructor;

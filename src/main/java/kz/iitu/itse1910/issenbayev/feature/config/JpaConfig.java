@@ -107,9 +107,9 @@ public class JpaConfig {
         props.put("hibernate.jdbc.fetch_size", 50);
 
         // Show SQL
-        props.put("hibernate.format_sql", true);
-        props.put("hibernate.use_sql_comments", true);
-        props.put("hibernate.show_sql", true);
+//        props.put("hibernate.format_sql", true);
+//        props.put("hibernate.use_sql_comments", true);
+//        props.put("hibernate.show_sql", true);
 
         return props;
     }

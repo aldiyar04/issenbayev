@@ -1,4 +1,4 @@
-package kz.iitu.itse1910.issenbayev.controller.exceptionhandler;
+package kz.iitu.itse1910.issenbayev.controller.aop;
 
 import kz.iitu.itse1910.issenbayev.dto.ErrorResponse;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;

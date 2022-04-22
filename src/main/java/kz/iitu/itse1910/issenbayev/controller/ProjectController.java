@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/projects")
+@CrossOrigin("http://localhost:4200")
 @AllArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
