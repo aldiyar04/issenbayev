@@ -5,13 +5,16 @@ import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
 import kz.iitu.itse1910.issenbayev.entity.Project;
 import kz.iitu.itse1910.issenbayev.entity.Ticket;
+import kz.iitu.itse1910.issenbayev.entity.User;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.TicketMapper;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
+import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import kz.iitu.itse1910.issenbayev.testdata.ProjectTestData;
 import kz.iitu.itse1910.issenbayev.testdata.TicketTestData;
+import kz.iitu.itse1910.issenbayev.testdata.UserTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -33,12 +36,15 @@ class TicketServiceTest {
     TicketRepository ticketRepository;
     @Mock
     ProjectRepository projectRepository;
+    @Mock
+    UserRepository userRepository;
     @InjectMocks
     TicketService underTest;
 
     TicketTestData.Entity tickets = new TicketTestData.Entity();
     TicketTestData.Dto ticketDtos = new TicketTestData.Dto();
     ProjectTestData.Entity projects = new ProjectTestData.Entity();
+    UserTestData.Entity users = new UserTestData.Entity();
 
     @BeforeEach
     void setUp() {
@@ -137,7 +143,7 @@ class TicketServiceTest {
         String title = "title";
         String description = "description";
         Project project1 = projects.getProject1();
-        String submitter = "Manager1";
+        User submitter = users.getAdmin();
         Ticket.Type type = Ticket.Type.BUG;
         Ticket.Status status = Ticket.Status.NEW;
         Ticket.Priority priority = Ticket.Priority.MEDIUM;
@@ -152,13 +158,14 @@ class TicketServiceTest {
                 .build();
         TicketDto expected = TicketMapper.INSTANCE.entityToDto(ticket);
         when(projectRepository.findById(project1.getId())).thenReturn(Optional.of(project1));
+        when(userRepository.findById(submitter.getId())).thenReturn(Optional.of(submitter));
         when(ticketRepository.save(any())).thenReturn(ticket);
 
         // when
         TicketCreationReq creationReq = TicketCreationReq.builder()
                 .title(title)
                 .description(description)
-                .submitter(submitter)
+                .submitterId(submitter.getId())
                 .type(toDtoType(type))
                 .status(toDtoStatus(status))
                 .priority(toDtoPriority(priority))
@@ -198,7 +205,22 @@ class TicketServiceTest {
         }).isInstanceOf(RecordNotFoundException.class);
     }
 
+    @Test
+    void testCreate_caseSubmitterNotFound() {
+        // given
+        long projectId = 1L;
+        long submitterId = -1L;
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(projects.getProject1()));
+        when(userRepository.findById(submitterId)).thenReturn(Optional.empty());
 
+        // when, then
+        TicketCreationReq creationReq = TicketCreationReq.builder()
+                .submitterId(submitterId)
+                .build();
+        assertThatThrownBy(() -> {
+            underTest.create(projectId, creationReq);
+        }).isInstanceOf(RecordNotFoundException.class);
+    }
 
     @Test
     void testUpdate_caseSuccessful() {
@@ -208,7 +230,7 @@ class TicketServiceTest {
         long id = 1L;
         String newTitle = "New Title";
         String newDescription = "New description...";
-        String assignee = "Developer1";
+        User assignee = users.getDeveloper1();
         Ticket.Type newType = Ticket.Type.OTHER;
         Ticket.Status newStatus = Ticket.Status.EXTRA_WORK_REQUIRED;
         Ticket.Priority newPriority = Ticket.Priority.HIGH;
@@ -225,6 +247,7 @@ class TicketServiceTest {
         TicketDto expected = TicketMapper.INSTANCE.entityToDto(updatedTicket);
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project1));
         when(ticketRepository.findById(id)).thenReturn(Optional.of(tickets.getTicket1()));
+        when(userRepository.findById(assignee.getId())).thenReturn(Optional.of(users.getDeveloper1()));
 
         when(ticketRepository.save(any())).thenReturn(updatedTicket);
 
@@ -232,7 +255,7 @@ class TicketServiceTest {
         TicketUpdateReq updateReq = TicketUpdateReq.builder()
                 .title(newTitle)
                 .description(newDescription)
-                .assignee(assignee)
+                .assigneeId(assignee.getId())
                 .type(toDtoType(newType))
                 .status(toDtoStatus(newStatus))
                 .priority(toDtoPriority(newPriority))
@@ -286,6 +309,44 @@ class TicketServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             underTest.update(projectId, id, any());
+        }).isInstanceOf(ApiException.class);
+    }
+
+    @Test
+    void testUpdate_caseAssigneeNotFound() {
+        // given
+        long projectId = 1L;
+        long id = 1L;
+        long assigneeId = -1L;
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(projects.getProject1()));
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(tickets.getTicket1()));
+        when(userRepository.findById(assigneeId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> {
+            TicketUpdateReq updateReq = TicketUpdateReq.builder()
+                    .assigneeId(assigneeId)
+                    .build();
+            underTest.update(projectId, id, updateReq);
+        }).isInstanceOf(RecordNotFoundException.class);
+    }
+
+    @Test
+    void update_shouldThrowApiException_whenAssigneeRoleManager() {
+        // given
+        long projectId = 1L;
+        long id = 1L;
+        User assignee = users.getManager();
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(projects.getProject1()));
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(tickets.getTicket1()));
+        when(userRepository.findById(assignee.getId())).thenReturn(Optional.of(assignee));
+
+        // when, then
+        assertThatThrownBy(() -> {
+            TicketUpdateReq updateReq = TicketUpdateReq.builder()
+                    .assigneeId(assignee.getId())
+                    .build();
+            underTest.update(projectId, id, updateReq);
         }).isInstanceOf(ApiException.class);
     }
 

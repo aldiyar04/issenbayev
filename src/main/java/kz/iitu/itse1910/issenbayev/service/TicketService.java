@@ -5,14 +5,17 @@ import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketCreationReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.request.TicketUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketDto;
 import kz.iitu.itse1910.issenbayev.dto.ticket.response.TicketPaginatedResp;
+import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.entity.Project;
 import kz.iitu.itse1910.issenbayev.entity.Ticket;
+import kz.iitu.itse1910.issenbayev.entity.User;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.TicketMapper;
 import kz.iitu.itse1910.issenbayev.repository.ProjectRepository;
 import kz.iitu.itse1910.issenbayev.repository.TicketRepository;
+import kz.iitu.itse1910.issenbayev.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ import org.springframework.util.StringUtils;
 public class TicketService {
     private final TicketRepository ticketRepository;
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public TicketPaginatedResp getTickets(Pageable pageable, long projectId) {
@@ -44,7 +48,7 @@ public class TicketService {
 
     public TicketDto create(long projectId, TicketCreationReq creationReq) {
         Project project = getProjectByIdOrThrowNotFound(projectId);
-        String submitter = creationReq.getSubmitter();
+        User submitter = getUserByIdOrThrowNotFound(creationReq.getSubmitterId());
 
         Ticket ticket = toEntity(creationReq);
         ticket.setProject(project);
@@ -61,7 +65,7 @@ public class TicketService {
 
         String newTitle = updateReq.getTitle();
         String newDescription = updateReq.getDescription();
-        String assignee = updateReq.getAssignee();
+        Long assigneeId = updateReq.getAssigneeId();
         Ticket.Type newType = toEntityType(updateReq.getType());
         Ticket.Status newStatus = toEntityStatus(updateReq.getStatus());
         Ticket.Priority newPriority = toEntityPriority(updateReq.getPriority());
@@ -73,7 +77,9 @@ public class TicketService {
         if (StringUtils.hasText(newDescription)) {
             ticket.setDescription(newDescription);
         }
-        if (StringUtils.hasText(assignee)) {
+        if (assigneeId != null) {
+            User assignee = getUserByIdOrThrowNotFound(assigneeId);
+            throwIfInappropriateRole(assignee);
             ticket.setAssignee(assignee);
         }
         if (newType != null) {
@@ -138,6 +144,27 @@ public class TicketService {
             String exMsg = String.format("Project with id %d doesn't have ticket with id %d",
                     project.getId(), ticket.getId());
             throw new ApiException(exMsg);
+        }
+    }
+
+    private User getUserByIdOrThrowNotFound(long id) {
+        ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
+                .field(ProjectDto.Field.ID)
+                .message("User with id " + id + " does not exist")
+                .build();
+        return userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
+    }
+
+    private void throwIfInappropriateRole(User assignee) {
+        if (assignee.getRole().equals(User.Role.MANAGER)) {
+            String exMsg = String.format("User with role '%s' cannot be an assignee. " +
+                    "Only users of the following roles can: '%s', '%s', '%s'.", assignee.getRole(),
+                    UserDto.Role.DEVELOPER, UserDto.Role.LEAD_DEV, UserDto.Role.ADMIN);
+            ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
+                    .field(UserDto.Field.ROLE)
+                    .message(exMsg)
+                    .build();
+            throw new ApiException(exDetailHolder);
         }
     }
 }
