@@ -45,19 +45,12 @@ public class RequestResponseLoggingAspect {
         log.info("REQUEST: " + requestDetails);
     }
 
-    @AfterReturning(value = "isController()", returning = "responseEntity")
-    public void logNonErrorResponse(JoinPoint joinPoint, ResponseEntity<?> responseEntity) {
+    @AfterReturning(value = "isController() || isExceptionHandlerDelegate()", returning = "responseEntity")
+    public void logResponse(JoinPoint joinPoint, ResponseEntity<?> responseEntity) {
         String details = getRequestDetails();
         if (responseEntity != null) {
             details += getResponseDetails(responseEntity);
         }
-        log.info("RESPONSE: " + details);
-    }
-
-    @AfterReturning(value = "isExceptionHandlerDelegate())", returning = "responseEntity")
-    public void logErrorResponse(JoinPoint joinPoint, ResponseEntity<Object> responseEntity) {
-        String details = getRequestDetails();
-        details += getResponseDetails(responseEntity);
         log.info("RESPONSE: " + details);
     }
 
