@@ -13,7 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Used by ExceptionHandlerDelegate
+// Used by RequestResponseLoggingAspect
 @Component
 @SuppressWarnings({"unchecked","rawtypes"})
 public class ExceptionHandlerDelegate {
