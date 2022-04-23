@@ -21,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().anyRequest().authenticated().and()
                 .httpBasic().and()
-                .cors().and()
+                .cors().and().csrf().disable() // to be able to perform POST requests for testing
                 .headers().xssProtection().and().contentSecurityPolicy("script-src 'self'");
     }
 

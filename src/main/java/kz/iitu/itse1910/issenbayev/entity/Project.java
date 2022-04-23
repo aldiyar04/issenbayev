@@ -48,8 +48,9 @@ public class Project extends BaseEntity {
     private List<Ticket> tickets;
 
     @PrePersist
-    private void setCreatedOn() {
+    private void setCreatedOnAndUpdatedOn() {
         createdOn = LocalDate.now();
+        updatedOn = LocalDate.now();
     }
 
     @PreUpdate

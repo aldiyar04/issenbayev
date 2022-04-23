@@ -4,9 +4,9 @@ import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.Co
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.annotation.RequestParamName;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
@@ -25,21 +25,19 @@ import javax.validation.Valid;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class CompoundRequestParamArgumentResolver implements HandlerMethodArgumentResolver {
     private final Map<Class<?>, Map<String, String>> MULTICLASS_FIELD_TO_REQ_PARAM_CACHE = new HashMap<>();
     private final ConversionService conversionService;
     private final SpringValidatorAdapter validator;
-
-    @Autowired
-    public CompoundRequestParamArgumentResolver(ConversionService conversionService,
-                                                SpringValidatorAdapter validator) {
-        this.conversionService = conversionService;
-        this.validator = validator;
-    }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

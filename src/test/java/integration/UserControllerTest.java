@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.iitu.itse1910.issenbayev.IssenbayevApplication;
 import kz.iitu.itse1910.issenbayev.controller.UserController;
+import kz.iitu.itse1910.issenbayev.controller.aop.ExceptionHandlerDelegate;
 import kz.iitu.itse1910.issenbayev.controller.api.UserApi;
 import kz.iitu.itse1910.issenbayev.controller.compoundrequestparam.argumentresolver.CompoundRequestParamArgumentResolver;
 import kz.iitu.itse1910.issenbayev.controller.aop.CustomExceptionHandler;
@@ -51,7 +52,7 @@ class UserControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(underTest)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
                         compoundRequestParamArgumentResolver)
-                .setControllerAdvice(new CustomExceptionHandler())
+                .setControllerAdvice(new CustomExceptionHandler(new ExceptionHandlerDelegate()))
                 .build();
     }
 
