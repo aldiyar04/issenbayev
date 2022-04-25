@@ -125,7 +125,6 @@ public class CompoundRequestParamArgumentResolver implements HandlerMethodArgume
             exDetailHolders.addAll(apiEx.getDetailHolders());
         } else {
             ApiExceptionDetailHolder exDetailHolder = ApiExceptionDetailHolder.builder()
-                    // TODO: add request param name to exDetailHolder
                     .message(exception.getLocalizedMessage())
                     .build();
             exDetailHolders.add(exDetailHolder);

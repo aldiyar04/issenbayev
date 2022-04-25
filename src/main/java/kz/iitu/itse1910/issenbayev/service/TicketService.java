@@ -70,7 +70,6 @@ public class TicketService {
         Ticket.Status newStatus = toEntityStatus(updateReq.getStatus());
         Ticket.Priority newPriority = toEntityPriority(updateReq.getPriority());
 
-        // TODO: add field validation in Ticket DTOs  (for type, status, priority, etc.)
         if (StringUtils.hasText(newTitle)) {
             ticket.setTitle(newTitle);
         }

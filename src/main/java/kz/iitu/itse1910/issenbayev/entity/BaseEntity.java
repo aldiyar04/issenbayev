@@ -1,5 +1,6 @@
 package kz.iitu.itse1910.issenbayev.entity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,11 +24,13 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = DatabaseColumn.VERSION)
     Long version = 1L;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String ID = "id";
         public static final String VERSION = "version";
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class DatabaseColumn {
         public static final String ID = "id";
         public static final String VERSION = "version";

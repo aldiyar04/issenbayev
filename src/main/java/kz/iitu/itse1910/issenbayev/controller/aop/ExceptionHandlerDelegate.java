@@ -2,6 +2,7 @@ package kz.iitu.itse1910.issenbayev.controller.aop;
 
 import kz.iitu.itse1910.issenbayev.dto.ErrorResponse;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiException;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.IncorrectPasswordException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Used by RequestResponseLoggingAspect
+// Used by CustomExceptionHandler
 @Component
 @SuppressWarnings({"unchecked","rawtypes"})
 public class ExceptionHandlerDelegate {
@@ -31,10 +32,9 @@ public class ExceptionHandlerDelegate {
             message = "Record Not Found";
         } else if (ex instanceof RecordAlreadyExistsException) {
             message = "Record Already Exists";
+        } else if (ex instanceof IncorrectPasswordException) {
+            message = "Provided password is incorrect";
         }
-//        else if (ex instanceof IncorrectPasswordException) {
-//            message = "Provided password is incorrect";
-//        }
         else {
             message = "Invalid use of API";
         }

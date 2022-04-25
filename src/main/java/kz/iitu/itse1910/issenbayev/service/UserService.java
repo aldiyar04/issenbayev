@@ -1,11 +1,13 @@
 package kz.iitu.itse1910.issenbayev.service;
 
+import kz.iitu.itse1910.issenbayev.dto.user.request.UserPasswdChangeReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserSignupReq;
 import kz.iitu.itse1910.issenbayev.dto.user.request.UserUpdateReq;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserDto;
 import kz.iitu.itse1910.issenbayev.dto.user.response.UserPaginatedResp;
 import kz.iitu.itse1910.issenbayev.entity.User;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.ApiExceptionDetailHolder;
+import kz.iitu.itse1910.issenbayev.feature.apiexception.IncorrectPasswordException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordAlreadyExistsException;
 import kz.iitu.itse1910.issenbayev.feature.apiexception.RecordNotFoundException;
 import kz.iitu.itse1910.issenbayev.feature.mapper.UserMapper;
@@ -14,6 +16,7 @@ import kz.iitu.itse1910.issenbayev.service.specification.UserRoleSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,33 +31,39 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserRoleSpecification roleSpec;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public UserPaginatedResp getUsers(Pageable pageable,
                                       Optional<UserDto.Role> roleOptional,
                                       Optional<Boolean> isAssignedToProjectOptional) {
-        Page<User> resultUserPage = null;
+        Page<User> userPage = null;
 
         if (roleOptional.isEmpty() && isAssignedToProjectOptional.isEmpty()) {
-            resultUserPage = userRepository.findAll(pageable);
+            userPage = userRepository.findAll(pageable);
         } else if (roleOptional.isPresent()) {
             UserDto.Role role = roleOptional.get();
             if (isAssignedToProjectOptional.isEmpty()) {
-                resultUserPage = userRepository.findAll(roleSpec.getForUserDtoRole(role), pageable);
+                userPage = userRepository.findAll(roleSpec.getForUserDtoRole(role), pageable);
             } else {
                 boolean isAssignedToProject = isAssignedToProjectOptional.get();
-                if (role.equals(UserDto.Role.LEAD_DEV) && !isAssignedToProject) {
-                    resultUserPage = userRepository.findUnassignedLeadDevs(pageable);
-                } else if (role.equals(UserDto.Role.LEAD_DEV) && isAssignedToProject) {
-                    resultUserPage = userRepository.findAssignedLeadDevs(pageable);
-                } else if (role.equals(UserDto.Role.DEVELOPER) && !isAssignedToProject) {
-                    resultUserPage = userRepository.findUnassignedDevelopers(pageable);
-                } else if (role.equals(UserDto.Role.DEVELOPER) && isAssignedToProject) {
-                    resultUserPage = userRepository.findAssignedDevelopers(pageable);
-                }
+                userPage = findAssignedOrUnassignedDevs(role, isAssignedToProject, pageable);
             }
         }
-        return UserPaginatedResp.fromUserPage(resultUserPage);
+        return UserPaginatedResp.fromUserPage(userPage);
+    }
+
+    private Page<User> findAssignedOrUnassignedDevs(UserDto.Role role, boolean isAssignedToProject,
+                                                    Pageable pageable) {
+        Page<User> userPage = null;
+        if (role.equals(UserDto.Role.LEAD_DEV)) {
+            if (isAssignedToProject) userPage = userRepository.findAssignedLeadDevs(pageable);
+            else userPage = userRepository.findUnassignedLeadDevs(pageable);
+        } else if (role.equals(UserDto.Role.DEVELOPER)) {
+            if (isAssignedToProject) userPage = userRepository.findAssignedDevelopers(pageable);
+            else userPage = userRepository.findUnassignedDevelopers(pageable);
+        }
+        return userPage;
     }
 
     public UserDto getById(long id) {
@@ -93,18 +102,17 @@ public class UserService {
         return toDto(updatedUser);
     }
 
-    // TODO: uncomment when password hashing is implemented
-//    public void changePassword(long id, UserPasswdChangeReq passChangeReq) {
-//        User user = getByIdOrThrowNotFound(id);
-//
-//        String supplied = passChangeReq.getOldPassword();
-//        String expected = user.getPassword();
-//        throwIfPasswordNotMatches(supplied, expected);
-//
-//        String newPassword = passChangeReq.getNewPassword();
-//        user.setPassword(newPassword);
-//        userRepository.save(user);
-//    }
+    public void changePassword(long id, UserPasswdChangeReq passChangeReq) {
+        User user = getByIdOrThrowNotFound(id);
+
+        String suppliedRawPassword = passChangeReq.getOldPassword();
+        String expectedPasswordHash = user.getPassword();
+        throwIfPasswordNotMatches(suppliedRawPassword, expectedPasswordHash);
+
+        String newPassword = passChangeReq.getNewPassword();
+        user.setPassword(newPassword);
+        userRepository.save(user);
+    }
 
     public void delete(Long id) {
         User user = getByIdOrThrowNotFound(id);
@@ -154,10 +162,9 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException(exDetailHolder));
     }
 
-    // TODO: uncomment and change impl when password hashing is implemented
-//    private void throwIfPasswordNotMatches(String actualPassword, String expectedPassword) {
-//        if (!Objects.equals(expectedPassword, actualPassword)) {
-//            throw new IncorrectPasswordException();
-//        }
-//    }
+    private void throwIfPasswordNotMatches(String suppliedRawPassword, String expectedPasswordHash) {
+        if (!passwordEncoder.matches(suppliedRawPassword, expectedPasswordHash)) {
+            throw new IncorrectPasswordException();
+        }
+    }
 }

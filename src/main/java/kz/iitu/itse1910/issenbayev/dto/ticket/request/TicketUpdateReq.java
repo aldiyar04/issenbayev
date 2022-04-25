@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
+
 @Builder
 @Getter
 @ToString
@@ -15,6 +17,5 @@ public class TicketUpdateReq {
     private final TicketDto.Type type;
     private final TicketDto.Status status;
     private final TicketDto.Priority priority;
-    // TODO: add support for targetResolutionDate:
-//    private final LocalDate targetResolutionDate;
+    private final LocalDate targetResolutionDate;
 }

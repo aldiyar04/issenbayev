@@ -31,7 +31,9 @@ public class LoginAttemptService {
         int attempts = 0;
         try {
             attempts = attemptsCache.get(key);
-        } catch (ExecutionException ignored) {}
+        } catch (ExecutionException ignored) {
+            // ignored, "attempts" remain 0
+        }
         attempts++;
         attemptsCache.put(key, attempts);
     }

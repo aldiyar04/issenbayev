@@ -1,5 +1,6 @@
 package kz.iitu.itse1910.issenbayev.entity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -121,6 +122,7 @@ public class Ticket extends BaseEntity {
                 '}';
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String TITLE = "title";
         public static final String DESCRIPTION = "description";
@@ -136,6 +138,7 @@ public class Ticket extends BaseEntity {
         public static final String UPDATED_AT = "updatedAt";
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class DatabaseColumn {
         public static final String TITLE = "title";
         public static final String DESCRIPTION = "description";
@@ -155,15 +158,15 @@ public class Ticket extends BaseEntity {
         BUG("Bug"), VULNERABILITY("Vulnerability"), FEATURE_REQUEST("Feature Request"),
         REFACTORING("Refactoring"), OTHER("Other");
 
-        private final String type;
+        private final String value;
 
-        Type(String type) {
-            this.type = type;
+        Type(String value) {
+            this.value = value;
         }
 
         @Override
         public String toString() {
-            return type;
+            return value;
         }
     }
 
@@ -171,29 +174,29 @@ public class Ticket extends BaseEntity {
         NEW("New"), ASSIGNED("Assigned"), IN_PROGRESS("In Progress"), SUBMITTED("Submitted"),
         EXTRA_WORK_REQUIRED("Extra Work Required"), RESOLVED("Resolved");
 
-        private final String status;
+        private final String value;
 
-        Status(String status) {
-            this.status = status;
+        Status(String value) {
+            this.value = value;
         }
 
         @Override
         public String toString() {
-            return status;
+            return value;
         }
     }
 
     public enum Priority {
         CRITICAL("Critical"), HIGH("High"), MEDIUM("Medium"), LOW("Low"), NONE("None");
-        private final String priority;
+        private final String value;
 
-        Priority(String priority) {
-            this.priority = priority;
+        Priority(String value) {
+            this.value = value;
         }
 
         @Override
         public String toString() {
-            return priority;
+            return value;
         }
     }
 }

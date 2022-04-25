@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Configuration
+@Profile(AppProfile.DEVELOPMENT)
 @EnableTransactionManagement
 public class JpaConfig {
     private final ConfigurableEnvironment env;
@@ -107,9 +109,9 @@ public class JpaConfig {
         props.put("hibernate.jdbc.fetch_size", 50);
 
         // Show SQL
-//        props.put("hibernate.format_sql", true);
-//        props.put("hibernate.use_sql_comments", true);
-//        props.put("hibernate.show_sql", true);
+        props.put("hibernate.format_sql", true);
+        props.put("hibernate.use_sql_comments", true);
+        props.put("hibernate.show_sql", true);
 
         return props;
     }

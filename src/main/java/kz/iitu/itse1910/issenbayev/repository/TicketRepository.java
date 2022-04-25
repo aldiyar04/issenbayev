@@ -10,7 +10,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.QueryHint;
-import java.util.List;
 import java.util.Optional;
 
 @Repository

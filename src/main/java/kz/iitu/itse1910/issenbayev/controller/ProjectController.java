@@ -7,44 +7,51 @@ import kz.iitu.itse1910.issenbayev.dto.project.response.ProjectPaginatedResp;
 import kz.iitu.itse1910.issenbayev.service.ProjectService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/projects")
-@CrossOrigin("http://localhost:4200")
 @AllArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<ProjectPaginatedResp> getProjects(Pageable pageable) {
-        ProjectPaginatedResp resp = projectService.getProjects(pageable);
-        return ResponseEntity.ok(resp);
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectPaginatedResp getProjects(Pageable pageable) {
+        return projectService.getProjects(pageable);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDto> getProjectById(@PathVariable("id") long id) {
-        ProjectDto project = projectService.getById(id);
-        return ResponseEntity.ok(project);
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectDto getProjectById(@PathVariable("id") long id) {
+        return projectService.getById(id);
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectCreationReq creationReq) {
-        ProjectDto createdProject = projectService.create(creationReq);
-        return ResponseEntity.ok(createdProject);
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectDto createProject(@RequestBody ProjectCreationReq creationReq) {
+        return projectService.create(creationReq);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDto> updateProject(@PathVariable("id") long id,
+    @ResponseStatus(HttpStatus.OK)
+    public ProjectDto updateProject(@PathVariable("id") long id,
                                                     @RequestBody ProjectUpdateReq updateReq) {
-        ProjectDto updatedProject = projectService.update(id, updateReq);
-        return ResponseEntity.ok(updatedProject);
+        return projectService.update(id, updateReq);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable("id") long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProject(@PathVariable("id") long id) {
         projectService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

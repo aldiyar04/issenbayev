@@ -1,12 +1,29 @@
 package kz.iitu.itse1910.issenbayev.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -88,6 +105,7 @@ public class Project extends BaseEntity {
         return leadDev == null ? "null" : "" + leadDev.getId();
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String NAME = "name";
         public static final String DESCRIPTION = "description";
@@ -96,6 +114,7 @@ public class Project extends BaseEntity {
         public static final String UPDATED_ON = "updatedOn";
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class DatabaseColumn {
         public static final String NAME = "name";
         public static final String DESCRIPTION = "description";

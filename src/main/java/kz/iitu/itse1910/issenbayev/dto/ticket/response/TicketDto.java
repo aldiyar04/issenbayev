@@ -1,9 +1,11 @@
 package kz.iitu.itse1910.issenbayev.dto.ticket.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -31,6 +33,7 @@ public class TicketDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String ID = "id";
         public static final String TITLE = "title";
@@ -54,16 +57,16 @@ public class TicketDto {
         BUG("Bug"), VULNERABILITY("Vulnerability"), FEATURE_REQUEST("Feature Request"),
         REFACTORING("Refactoring"), OTHER("Other");
 
-        private final String type;
+        private final String value;
 
-        Type(String type) {
-            this.type = type;
+        Type(String value) {
+            this.value = value;
         }
 
         @Override
         @JsonValue
         public String toString() {
-            return type;
+            return value;
         }
     }
 
@@ -71,31 +74,32 @@ public class TicketDto {
         NEW("New"), ASSIGNED("Assigned"), IN_PROGRESS("In Progress"), SUBMITTED("Submitted"),
         EXTRA_WORK_REQUIRED("Extra Work Required"), RESOLVED("Resolved");
 
-        private final String status;
+        private final String value;
 
-        Status(String status) {
-            this.status = status;
+        Status(String value) {
+            this.value = value;
         }
 
         @Override
         @JsonValue
         public String toString() {
-            return status;
+            return value;
         }
     }
 
     public enum Priority {
         CRITICAL("Critical"), HIGH("High"), MEDIUM("Medium"), LOW("Low"), NONE("None");
-        private final String priority;
 
-        Priority(String priority) {
-            this.priority = priority;
+        private final String value;
+
+        Priority(String value) {
+            this.value = value;
         }
 
         @Override
         @JsonValue
         public String toString() {
-            return priority;
+            return value;
         }
     }
 }

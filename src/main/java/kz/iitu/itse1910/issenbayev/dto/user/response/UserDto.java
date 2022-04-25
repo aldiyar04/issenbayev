@@ -2,9 +2,11 @@ package kz.iitu.itse1910.issenbayev.dto.user.response;
 
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -20,6 +22,7 @@ public class UserDto {
     private final String username;
     private final LocalDate createdOn;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String ID = "id";
         public static final String ROLE = "role";
@@ -31,16 +34,16 @@ public class UserDto {
     public enum Role {
         ADMIN("Admin"), MANAGER("Manager"), LEAD_DEV("Lead Dev"), DEVELOPER("Developer");
 
-        private final String role;
+        private final String value;
 
-        Role(String role) {
-            this.role = role;
+        Role(String value) {
+            this.value = value;
         }
 
         @Override
         @JsonValue
         public String toString() {
-            return role;
+            return value;
         }
     }
 }

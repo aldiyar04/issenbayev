@@ -1,6 +1,5 @@
 package kz.iitu.itse1910.issenbayev.dto.project.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

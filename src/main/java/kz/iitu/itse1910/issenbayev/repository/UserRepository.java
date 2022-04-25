@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     Page<User> findAll(@NonNull Pageable pageable);
 
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
-    Page<User> findAll(@NonNull Specification<User> specification, @NonNull Pageable pageable);
+    Page<User> findAll(Specification<User> specification, @NonNull Pageable pageable);
 
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
     Optional<User> findByUsername(String username);

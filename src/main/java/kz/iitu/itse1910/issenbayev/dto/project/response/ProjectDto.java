@@ -1,8 +1,10 @@
 package kz.iitu.itse1910.issenbayev.dto.project.response;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Builder
@@ -18,6 +20,7 @@ public class ProjectDto {
     private final String createdOn;
     private final String updatedOn;
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String ID = "id";
         public static final String NAME = "name";

@@ -76,7 +76,7 @@ public class ProjectService {
         if (projectRepository.existsByName(projectName)) {
             ApiExceptionDetailHolder exceptionDetailHolder = ApiExceptionDetailHolder.builder()
                     .field(ProjectDto.Field.NAME)
-                    .message("Project with name '" + projectName + "' does not exist")
+                    .message("Project with name '" + projectName + "' already exists")
                     .build();
             throw new RecordAlreadyExistsException(exceptionDetailHolder);
         }

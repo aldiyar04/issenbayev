@@ -49,6 +49,7 @@ public class User extends BaseEntity {
         this.createdOn = createdOn;
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Field {
         public static final String ROLE = "role";
         public static final String EMAIL = "email";
@@ -57,6 +58,7 @@ public class User extends BaseEntity {
         public static final String CREATED_ON = "createdOn";
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class DatabaseColumn {
         public static final String ROLE = "role";
         public static final String EMAIL = "email";
@@ -68,15 +70,15 @@ public class User extends BaseEntity {
     public enum Role {
         ADMIN("Admin"), MANAGER("Manager"), LEAD_DEV("Lead Dev"), DEVELOPER("Developer");
 
-        private final String role;
+        private final String value;
 
-        Role(String role) {
-            this.role = role;
+        Role(String value) {
+            this.value = value;
         }
 
         @Override
         public String toString() {
-            return role;
+            return value;
         }
     }
 }

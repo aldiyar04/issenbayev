@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 public class ApiException extends RuntimeException {
-    private final List<ApiExceptionDetailHolder> detailHolders;
+    private final transient List<ApiExceptionDetailHolder> detailHolders;
 
     public ApiException(List<ApiExceptionDetailHolder> detailHolders) {
         this.detailHolders = detailHolders;

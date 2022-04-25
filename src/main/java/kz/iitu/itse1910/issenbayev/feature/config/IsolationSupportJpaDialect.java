@@ -55,8 +55,7 @@ public class IsolationSupportJpaDialect extends HibernateJpaDialect {
 
         public void resetIsolationLevel() {
             if (this.previousIsolationLevel != null) {
-                DataSourceUtils.resetConnectionAfterTransaction(connection,
-                        previousIsolationLevel);
+                DataSourceUtils.resetConnectionAfterTransaction(connection, previousIsolationLevel, true);
             }
         }
 
