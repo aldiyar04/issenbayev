@@ -2,7 +2,7 @@ package kz.iitu.itse1910.issenbayev.controller.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.iitu.itse1910.issenbayev.controller.aop.util.AuthenticationHolder;
+import kz.iitu.itse1910.issenbayev.controller.aop.util.AuthenticationAdapter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 @Slf4j
 @AllArgsConstructor
 public class RequestResponseLoggingAspect {
-    private final AuthenticationHolder authenticationHolder;
+    private final AuthenticationAdapter authenticationAdapter;
     private final HttpServletRequest request;
     private final ObjectMapper objectMapper;
 
@@ -76,7 +76,7 @@ public class RequestResponseLoggingAspect {
     }
 
     private Optional<String> getUsername() {
-        String username = authenticationHolder.getAuthentication().getName();
+        String username = authenticationAdapter.getAuthentication().getName();
         return Optional.ofNullable(username);
     }
 
